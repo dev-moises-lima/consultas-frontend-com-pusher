@@ -1,11 +1,12 @@
 import { Col, Row, Image, Stack, Badge, Placeholder } from "react-bootstrap";
-import { CondicaoDoPaciente, Paciente } from "../../lib/minhas-interfaces-e-tipos";
+import { CondicaoDoPaciente } from "../../lib/minhas-interfaces-e-tipos";
 import moment from "moment";
 import { useState } from "react";
 import { obterCorDaCondicao } from "../../lib/minhas-funcoes";
+import { Patient } from "@/app/types/patient";
 
 interface InfoPacienteProps {
-  paciente: Paciente
+  paciente: Patient
   sectionRef: React.MutableRefObject<null>
 }
 
@@ -15,10 +16,10 @@ export function InfoPaciente({
 } : InfoPacienteProps) {
   const [fotoCarregada, setFotoCarregada] = useState(false)
   const hoje = moment()
-  const dataDeNascimento = moment(paciente.data_de_nascimento, "YYYY/MM/DD")
+  const dataDeNascimento = moment(paciente.dateOfBirth , "YYYY/MM/DD")
   const idadeDoPaciente = hoje.diff(dataDeNascimento, "year")
 
-  const condicaoDoPaciente: CondicaoDoPaciente = paciente.condicao_atual
+  const condicaoDoPaciente: CondicaoDoPaciente = paciente.currentCondition
 
   const corDaCondicao = obterCorDaCondicao(condicaoDoPaciente)
   
@@ -34,7 +35,7 @@ export function InfoPaciente({
                 Nome Do paciente
               </div>
               <div className="fs-4 fw-semibold">
-                {paciente.nome}
+                {paciente.name}
               </div>
             </Col>
             <Col>
@@ -80,7 +81,7 @@ export function InfoPaciente({
                 Telefone
               </div>
               <div className="fs-4 fw-semibold">
-                {paciente.telefone}
+                {paciente.telephone}
               </div>
             </Col>
           </Row>
@@ -100,7 +101,7 @@ export function InfoPaciente({
             className={`d-${fotoCarregada ? "block" : "none"}`}
             roundedCircle
             fluid
-            src={paciente.foto}
+            src={paciente.photoUrl}
             onLoad={() => setFotoCarregada(true)}
           />
         </Col>

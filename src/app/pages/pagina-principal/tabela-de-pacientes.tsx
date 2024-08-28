@@ -1,18 +1,18 @@
 import { ItemDaTabelaPacientes } from "./item-da-tabela-pacientes";
-import { Paciente } from "../../lib/minhas-interfaces-e-tipos";
 import { Col, Form, InputGroup, Row, Table } from "react-bootstrap";
 import { IoIosSearch } from "react-icons/io";
 import { useState } from "react";
 import { normalizar } from "../../lib/minhas-funcoes";
+import { Patient } from "@/app/types/patient";
 
 interface TabelaDePacientesProps {
-  pacientes: Paciente[] | undefined
+  pacientes: Patient[] | undefined
 }
 
 export function TabelaDePacientes({ pacientes }: TabelaDePacientesProps) {
   const [filtro, setFiltro] = useState("")
 
-  let pacientesFiltrados: Paciente[] = []
+  let pacientesFiltrados: Patient[] = []
 
   if (pacientes) {
     pacientesFiltrados = pacientes.slice()
@@ -20,7 +20,7 @@ export function TabelaDePacientes({ pacientes }: TabelaDePacientesProps) {
 
   if (filtro) {
     pacientesFiltrados = pacientesFiltrados.filter((paciente) => {
-      return normalizar(paciente.nome).includes(filtro)
+      return normalizar(paciente.name).includes(filtro)
     })
   }
 

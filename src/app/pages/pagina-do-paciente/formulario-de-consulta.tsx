@@ -1,10 +1,11 @@
 import { FormEvent, useContext, useEffect, useState } from "react"
 import { Button, Col, FloatingLabel, Form, Row, Stack } from "react-bootstrap"
-import { calcularStatusDaCondicao, generateUUID, obterMensagemDeErro } from "../../lib/minhas-funcoes"
+import { calcularStatusDaCondicao, generateUUID, obterMensagemDeErro } from "../../lib/minhas-funcoes.ts"
 import { api } from "../../lib/axios.ts"
-import { Consulta, ErrosDeRealizacaoDeConsulta, Mensagem, Paciente } from "../../lib/minhas-interfaces-e-tipos"
-import { AppContext } from "../../context/AppContext.tsx"
+import { Consulta, ErrosDeRealizacaoDeConsulta, Mensagem   } from "../../lib/minhas-interfaces-e-tipos.ts"
+import { AppContext } from "../../contexts/AppContext.tsx"
 import { AxiosError } from "axios"
+import { Patient } from "@/app/types/patient.ts"
 
 interface FormularioDeConsultaProps {
   esconderFormularioDeConsulta: () => void
@@ -15,7 +16,7 @@ interface FormularioDeConsultaProps {
   formularioRef: React.MutableRefObject<null>
   rolarParaSessaoDoFormulario: () => void
   adicionarConsulta: (consulta: Consulta) => void
-  setPaciente: (paciente: Paciente) => void
+  setPaciente: (paciente: Patient) => void
 }
 
 export function FormularioDeConsulta({
@@ -96,7 +97,7 @@ export function FormularioDeConsulta({
       .then(resposta => {
         const novaMensagem: Mensagem = [resposta.data.mensagem, "sucesso", generateUUID()]
         const novaConsulta: Consulta = resposta.data.consulta
-        setPaciente(resposta.data.paciente as Paciente)
+        setPaciente(resposta.data.paciente as Patient)
         adicionarConsulta(novaConsulta)
         adicionarMensagem(novaMensagem)
         esconderFormularioDeConsulta()

@@ -6,16 +6,16 @@ import {
   inverterData,
   obterMensagemDeErro,
   validarDataDeNascimento,
-} from "../../lib/minhas-funcoes"
+} from "../../lib/minhas-funcoes.ts"
 import { api } from "../../lib/axios.ts"
 import { useMask } from "@react-input/mask"
 import {
   ErrosDeCadastroDePaciente,
   Mensagem,
   Paciente,
-} from "../../lib/minhas-interfaces-e-tipos"
+} from "../../lib/minhas-interfaces-e-tipos.ts"
 import { AxiosError } from "axios"
-import { AppContext } from "../../context/AppContext.tsx"
+import { AppContext } from "../../contexts/AppContext.tsx"
 
 interface FormularioDeCadastroDePacienteProps {
   fecharModalDeCadastro: () => void
@@ -86,7 +86,7 @@ export function FormularioDeCadastroDePaciente({
 
     dados.set("data_de_nascimento", dataDeNascimento)
 
-    api.post("pacientes", dados)
+    api.post("pacientes", dados, {headers: {'socketId': window.Echo.socketId()}})
       .then((resposta) => {
         const novoPaciente: Paciente = resposta.data.paciente 
         adicionarPaciente(novoPaciente)
@@ -143,7 +143,6 @@ export function FormularioDeCadastroDePaciente({
             <Form.Label>Nome do Paciente:</Form.Label>
             <Form.Control
               autoFocus
-              required
               type="text"
               name="nome"
               placeholder="Insira seu nome aqui"

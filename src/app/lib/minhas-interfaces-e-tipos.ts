@@ -1,3 +1,5 @@
+import { Patient } from "../types/patient"
+
 export interface Paciente {
   id: number
   nome: string
@@ -23,12 +25,12 @@ export interface Consulta {
 export interface ConsultaCadastradaEvento
 {
   consulta: Consulta
-  paciente: Paciente
+  paciente: Patient
 }
 
 export interface PacienteCadastradoEvento
 {
-  paciente: Paciente
+  patient: Patient
 }
 
 export interface ErrosDeCadastroDePaciente {

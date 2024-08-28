@@ -1,12 +1,12 @@
 import moment from "moment";
-import { Paciente } from "../../lib/minhas-interfaces-e-tipos";
 import { Button } from "react-bootstrap";
 import { FaArrowRight } from "react-icons/fa";
 import { obterCorDaCondicao } from "../../lib/minhas-funcoes";
 import { useNavigate } from "react-router-dom";
+import { Patient } from "@/app/types/patient";
 
 interface ItemDaTabelaPacientesProps {
-  paciente: Paciente
+  paciente: Patient
 }
 
 export function ItemDaTabelaPacientes({
@@ -14,16 +14,16 @@ export function ItemDaTabelaPacientes({
 }: ItemDaTabelaPacientesProps) {
   const navigate = useNavigate()
   const hoje = moment()
-  const dataDeNascimento = moment(paciente.data_de_nascimento, "YYYY/MM/DD")
+  const dataDeNascimento = moment(paciente.dateOfBirth, "YYYY/MM/DD")
   const idadeDoPaciente = hoje.diff(dataDeNascimento, "year")
-  const corDaCondicao = obterCorDaCondicao(paciente.condicao_atual)
+  const corDaCondicao = obterCorDaCondicao(paciente.currentCondition)
 
   return (
     <tr>
       <td className="align-middle">{paciente.id}</td>
-      <td className="align-middle">{paciente.nome}</td>
+      <td className="align-middle">{paciente.name}</td>
       <td className={`align-middle text-${corDaCondicao}`}>
-        {paciente.condicao_atual || "Nenhuma consulta foi feita"}
+        {paciente.currentCondition || "Nenhuma consulta foi feita"}
       </td>
       <td className="align-middle">{paciente.cpf}</td>
       <td className="align-middle">{idadeDoPaciente}</td>

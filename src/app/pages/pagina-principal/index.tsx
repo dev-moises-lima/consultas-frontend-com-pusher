@@ -1,35 +1,36 @@
 import { useContext, useEffect, useState } from "react"
-import { ModalDeCadastroDePaciente } from "./modal-de-cadastro-de-paciente"
-import { TabelaDePacientes } from "./tabela-de-pacientes"
+import { TabelaDePacientes } from "./tabela-de-pacientes.tsx"
 import { Button } from "react-bootstrap"
 import { api } from "../../lib/axios.ts"
-import { Mensagem, Paciente, PacienteCadastradoEvento } from "../../lib/minhas-interfaces-e-tipos"
+import { Mensagem, PacienteCadastradoEvento } from "../../lib/minhas-interfaces-e-tipos.ts"
 import { Notificacao } from "../../components/notificacao"
 import { AxiosError } from "axios"
 import { obterMensagemDeErro } from "../../lib/minhas-funcoes.ts"
-import { AppContext } from "../../context/AppContext.tsx"
+import { AppContext } from "../../contexts/AppContext.tsx"
+import PatientRegistrationModal from "@/app/components/modals/PatientRegistrationModal"
+import { Patient } from "@/app/types/patient.ts"
 
 
 export function PaginaPrincipal() {
   const { mudarMensagemDeErroFatal } = useContext(AppContext)
   const [modalDeCadastroAberto, setModalDeCadastroAberto] = useState(false)
-  const [pacientes, setPacientes] = useState<Paciente[]>()
+  const [pacientes, setPacientes] = useState<Patient[]>()
   const [mensagens, setMensagens] = useState<Mensagem[]>([])
   console.log(pacientes)
   
-  const atualizacoesGerais =  window.Echo.channel('atualizacoes-gerais')
+  const mainUpdatesChannel =  window.Echo.channel('main-updates')
 
-  atualizacoesGerais.listen('.paciente-cadastrado', (event: PacienteCadastradoEvento) => {
+  mainUpdatesChannel.listen('PatientRegistered', (event: PacienteCadastradoEvento) => {
       console.log(event)
-      adicionarPaciente(event.paciente)
-   })
+      adicionarPaciente(event.patient)
+    })
 
   async function obterPacientes() {
     try {
-      const resposta = await api.get("pacientes")
-      setPacientes(resposta.data)
+      const {data} = await api.get("patients")
+      setPacientes(data.data)
       mudarMensagemDeErroFatal("")
-      console.log(resposta)
+      console.log(data)
     } catch (erro) {
       console.log(erro)
       const axiosError = erro as AxiosError
@@ -48,7 +49,7 @@ export function PaginaPrincipal() {
   }, [])
 
 
-  function adicionarPaciente(paciente: Paciente) {
+  function adicionarPaciente(paciente: Patient) {
     if(pacientes === undefined) {
       return
     }
@@ -70,6 +71,11 @@ export function PaginaPrincipal() {
     setModalDeCadastroAberto(true)
   }
 
+  function handleSuccess(patient: Patient) {
+    adicionarPaciente(patient)
+    fecharModalDeCadastro()
+  }
+
   return (
     <>
       {mensagens &&
@@ -87,13 +93,12 @@ export function PaginaPrincipal() {
           Cadastrar Paciente
         </Button>
       </div>
-      <ModalDeCadastroDePaciente
-        modalDeCadastroAberto={modalDeCadastroAberto}
-        fecharModalDeCadastro={fecharModalDeCadastro}
-        mensagens={mensagens}
-        setMensagens={setMensagens}
-        setMensagemDeErro={mudarMensagemDeErroFatal}
-        adicionarPaciente={adicionarPaciente}
+      <PatientRegistrationModal 
+        backdrop="static"
+        show={modalDeCadastroAberto}
+        onHide={fecharModalDeCadastro}
+        onCancel={fecharModalDeCadastro}
+        onSuccess={handleSuccess}
       />
       <TabelaDePacientes pacientes={pacientes} />
     </>

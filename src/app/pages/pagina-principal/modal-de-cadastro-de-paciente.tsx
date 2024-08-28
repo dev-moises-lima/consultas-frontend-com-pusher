@@ -7,7 +7,6 @@ interface ModalDeCadastroDePacienteProps {
   fecharModalDeCadastro: () => void
   setMensagens: (mensagens: Mensagem[]) => void
   mensagens: Mensagem[]
-  setMensagemDeErro: (mensagen: string) => void
   adicionarPaciente: (paciente: Paciente) => void
 }
 
@@ -16,7 +15,6 @@ export function ModalDeCadastroDePaciente({
   fecharModalDeCadastro,
   mensagens,
   setMensagens,
-  setMensagemDeErro,
   adicionarPaciente,
 }: ModalDeCadastroDePacienteProps) {
   return (
@@ -35,7 +33,6 @@ export function ModalDeCadastroDePaciente({
           fecharModalDeCadastro={fecharModalDeCadastro}
           mensagens={mensagens}
           setMensagens={setMensagens}
-          setMensagemDeErro={setMensagemDeErro}
           adicionarPaciente={adicionarPaciente}
         />
       </Modal.Body>
