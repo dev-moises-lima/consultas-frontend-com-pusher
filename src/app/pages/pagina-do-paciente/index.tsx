@@ -7,7 +7,7 @@ import { InfoPaciente } from "./info-paciente"
 import { TabelaDeConsultas } from "./tabela-de-consultas"
 // import { Mensagem } from "../../lib/minhas-interfaces-e-tipos"
 import { api } from "../../lib/axios"
-import { useNavigate, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 // import { Notificacao } from "../../components/notificacao"
 import { Patient } from "@/app/types/Patient"
 import ConsultationRegistrationForm from "@/app/components/forms/ConsultationRegistrationForm"
@@ -17,20 +17,15 @@ import { RegisteredConsultationEvent } from "@/app/types/events/RegisteredConsul
 export function PaginaDoPaciente() {
   // const [mensagens, setMensagens] = useState<Mensagem[]>([])
   const [exibindoFormularioDeConsulta, setMostrarFormularioDeConsulta] = useState(false)
-  const [patient, setPatient] = useState<Patient>()
+  const { state } = useLocation()
+  const [patient, setPatient] = useState<Patient>(state as Patient)
   const [consultations, setConsultations] = useState<Consultation[]>()
   const { patientId } = useParams()
   const navigate = useNavigate()
   const formRef = useRef(null)
   const infoPatientRef = useRef(null)
-
-  // function handleConsultaCadastrada({
-  //   consulta,
-  //   paciente,
-  // }: ConsultaCadastradaEvento) {
-  //   setPatient(paciente)
-  //   // adicionarConsulta(consulta)
-  // }
+  
+  
 
   const atualizacoesDoPaciente = window.Echo.channel(`patient-updates-${patientId}`)
   
@@ -82,17 +77,17 @@ export function PaginaDoPaciente() {
   //   setMensagens([...mensagens, mensagem])
   // }
 
-  async function fetchPatients() {
-    try {
-      const response = await api.get(`patients/${patientId}`)
-      console.log(response)
+  // async function fetchPatient() {
+  //   try {
+  //     const response = await api.get(`patients/${patientId}`)
+  //     console.log(response)
       
-      setPatient(response.data.data)
-      fetchConsultations()
-    } catch (error) {      
-      console.log(error)
-    }
-  }
+  //     setPatient(response.data.data)
+  //     fetchConsultations()
+  //   } catch (error) {      
+  //     console.log(error)
+  //   }
+  // }
   
   async function fetchConsultations() {
     try {
@@ -104,7 +99,7 @@ export function PaginaDoPaciente() {
   }
 
   useEffect(() => {
-    fetchPatients()
+    fetchConsultations()
   }, [patientId])
 
   return (

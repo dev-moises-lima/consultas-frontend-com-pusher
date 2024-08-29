@@ -28,7 +28,7 @@ export function ItemDaTabelaPacientes({
       <td className="align-middle">{patient.cpf}</td>
       <td className="align-middle">{idadeDoPaciente}</td>
       <td className="text-center align-middle">
-        <Button className="w-75" onClick={() => navigate(`patient/${patient.id}`)}>
+        <Button className="w-75" onClick={() => navigate(`patient/${patient.id}`, {state: patient})}>
           <FaArrowRight />
         </Button>
       </td>
