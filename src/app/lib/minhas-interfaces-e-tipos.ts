@@ -1,4 +1,4 @@
-import { Patient } from "../types/patient"
+import { Patient } from "@/app/types/pwatient"
 
 export interface Paciente {
   id: number

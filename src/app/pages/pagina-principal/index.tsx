@@ -8,15 +8,15 @@ import { AxiosError } from "axios"
 import { obterMensagemDeErro } from "../../lib/minhas-funcoes.ts"
 import { AppContext } from "../../contexts/AppContext.tsx"
 import PatientRegistrationModal from "@/app/components/modals/PatientRegistrationModal"
-import { Patient } from "@/app/types/patient.ts"
-
+import { Patient } from "@/app/types/Patient"
+import { UpdatedPatientEvent } from "@/app/types/events/UpdatedPatientEvent.ts"
 
 export function PaginaPrincipal() {
   const { mudarMensagemDeErroFatal } = useContext(AppContext)
   const [modalDeCadastroAberto, setModalDeCadastroAberto] = useState(false)
-  const [pacientes, setPacientes] = useState<Patient[]>()
+  const [patients, setPatients] = useState<Patient[]>()
   const [mensagens, setMensagens] = useState<Mensagem[]>([])
-  console.log(pacientes)
+  console.log(patients)
   
   const mainUpdatesChannel =  window.Echo.channel('main-updates')
 
@@ -25,10 +25,18 @@ export function PaginaPrincipal() {
       adicionarPaciente(event.patient)
     })
 
+  mainUpdatesChannel.listen("UpdatedPatient", ({ patient }: UpdatedPatientEvent) => {
+      const newPatients = patients?.map((currentPatient) => {
+        return currentPatient.id === patient.id ? patient : currentPatient
+      })
+
+      setPatients(newPatients)
+    })
+
   async function obterPacientes() {
     try {
       const {data} = await api.get("patients")
-      setPacientes(data.data)
+      setPatients(data.data)
       mudarMensagemDeErroFatal("")
       console.log(data)
     } catch (erro) {
@@ -50,11 +58,11 @@ export function PaginaPrincipal() {
 
 
   function adicionarPaciente(paciente: Patient) {
-    if(pacientes === undefined) {
+    if(patients === undefined) {
       return
     }
 
-    setPacientes([...pacientes, paciente])
+    setPatients([...patients, paciente])
   }
 
   function removerMensagem(codigoDaMensagem: string) {
@@ -100,7 +108,7 @@ export function PaginaPrincipal() {
         onCancel={fecharModalDeCadastro}
         onSuccess={handleSuccess}
       />
-      <TabelaDePacientes pacientes={pacientes} />
+      <TabelaDePacientes pacientes={patients} />
     </>
   );
 }

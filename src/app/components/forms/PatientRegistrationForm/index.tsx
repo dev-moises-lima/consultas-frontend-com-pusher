@@ -7,7 +7,7 @@ import { RegisterPatientInitialValues, registerPatientIniialValues } from '@/app
 import { registerPatientValidationSchema } from '@/app/utils/validations/registerPatient'
 import { useMask } from '@react-input/mask'
 import { api } from '@/app/lib/axios'
-import { Patient } from '@/app/types/patient'
+import { Patient } from '@/app/types/Patient'
 
 interface Props {
     onCancel: () => void

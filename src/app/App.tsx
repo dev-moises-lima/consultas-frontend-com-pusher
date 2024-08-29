@@ -2,12 +2,8 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import { PaginaPrincipal } from "./pages/pagina-principal"
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { PaginaDoPaciente } from "./pages/pagina-do-paciente"
-import { useContext } from "react"
-import { ModalDeNotificacaoDeErro } from "./components/modal-de-notificacao-de-erro"
-import { AppContext } from "./contexts/AppContext"
 
 export function App() {
-  const { mensagemDeErroFatal } = useContext(AppContext)
   
   const router = createBrowserRouter([
     {
@@ -15,7 +11,7 @@ export function App() {
       element: <PaginaPrincipal/>
     },
     {
-      path: 'paciente/:pacienteId',
+      path: 'patient/:patientId',
       element: <PaginaDoPaciente/>
     }
   ])
@@ -28,12 +24,6 @@ export function App() {
       }}
     >
       <RouterProvider router={router} />
-      {mensagemDeErroFatal && (
-        <ModalDeNotificacaoDeErro>
-          {mensagemDeErroFatal}
-        </ModalDeNotificacaoDeErro>
-      )}
     </main>
   )
 }
-

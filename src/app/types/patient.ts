@@ -1,4 +1,4 @@
-import { CondicaoDoPaciente } from "../lib/minhas-interfaces-e-tipos"
+import { CondicaoDoPaciente } from "@/app/lib/minhas-interfaces-e-tipos"
 
 export type Patient = {
     id: number

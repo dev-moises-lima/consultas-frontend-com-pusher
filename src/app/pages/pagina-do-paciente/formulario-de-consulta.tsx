@@ -5,7 +5,7 @@ import { api } from "../../lib/axios.ts"
 import { Consulta, ErrosDeRealizacaoDeConsulta, Mensagem   } from "../../lib/minhas-interfaces-e-tipos.ts"
 import { AppContext } from "../../contexts/AppContext.tsx"
 import { AxiosError } from "axios"
-import { Patient } from "@/app/types/patient.ts"
+import { Patient } from "@/app/types/pwatient.ts"
 
 interface FormularioDeConsultaProps {
   esconderFormularioDeConsulta: () => void

@@ -1,29 +1,30 @@
-import Table from "react-bootstrap/esm/Table";
-import { Consulta } from "../../lib/minhas-interfaces-e-tipos";
-import { ItemDaTabelaConsultas } from "./intem-da-tabela-consulta";
-import { Col, Form, Row } from "react-bootstrap";
-import { useState } from "react";
+import { useState } from "react"
+import Table from "react-bootstrap/esm/Table"
+import { ItemDaTabelaConsultas } from "./intem-da-tabela-consulta"
+import { Col, Form, Row } from "react-bootstrap"
 
-interface TabelaDeConsultasProps {
-  consultas: Consulta[] | undefined
+import { Consultation } from "@/app/types/Consultation"
+
+interface Props {
+  consultations: Consultation[] | undefined
 }
 
 export function TabelaDeConsultas({
-  consultas
-} : TabelaDeConsultasProps) {
-  const [filtro, setFiltro] = useState("recentes")  
+  consultations
+}: Props) {
+  const [filter, setFilter] = useState("recentes") 
 
-  let consultasComFiltro = consultas
+  let consultasComFiltro = consultations
 
-  if(filtro === "recentes") {
-    consultasComFiltro = consultas?.slice().reverse()
+  if(filter === "recentes") {
+    consultasComFiltro = consultations?.slice().reverse()
   }
 
   return (
     <section className="p-4 bg-secondary-subtle rounded-2 mt-3">
-      {consultas === undefined ? (
+      {consultations === undefined ? (
         <h2 className="text-center text-info">Carregando Consultas...</h2>
-      ) : consultas.length === 0 ? (
+      ) : consultations.length === 0 ? (
         <h2 className="text-center text-info">Nenhuma consulta foi realizada ainda.</h2>
       ) : (
         <>
@@ -35,7 +36,7 @@ export function TabelaDeConsultas({
               <Form.Select 
                 size="sm" 
                 aria-label="Default select example"
-                onChange={event => setFiltro(event.currentTarget.value)}
+                onChange={event => setFilter(event.currentTarget.value)}
               >
                 <option  value={"recentes"}>Mais recentes</option>
                 <option  value={"antigas"}>Mais antigas</option>
@@ -55,10 +56,10 @@ export function TabelaDeConsultas({
               </tr>
             </thead>
             <tbody>
-              {consultasComFiltro!.map(consulta => (
+              {consultasComFiltro!.map(consultation => (
                 <ItemDaTabelaConsultas 
-                  key={consulta.id}
-                  consulta={consulta}
+                  key={consultation.id}
+                  consultation={consultation}
                 />
               ))}
             </tbody>

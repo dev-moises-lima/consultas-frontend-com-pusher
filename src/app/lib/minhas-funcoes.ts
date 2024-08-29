@@ -49,7 +49,7 @@ export function generateUUID() {
   })
 }
 
-export function normalizar(texto: string) {
+export function transformForSearch(texto: string) {
   return texto
   .toLowerCase()
   .normalize('NFD')

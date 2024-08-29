@@ -3,7 +3,7 @@ import { CondicaoDoPaciente } from "../../lib/minhas-interfaces-e-tipos";
 import moment from "moment";
 import { useState } from "react";
 import { obterCorDaCondicao } from "../../lib/minhas-funcoes";
-import { Patient } from "@/app/types/patient";
+import { Patient } from "@/app/types/Patient";
 
 interface InfoPacienteProps {
   paciente: Patient

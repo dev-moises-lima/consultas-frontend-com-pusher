@@ -4,17 +4,17 @@ import Stack from "react-bootstrap/Stack"
 import Button from "react-bootstrap/Button"
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
-
+import { useParams } from "react-router-dom"
 import { useFormik } from "formik"
 
 import { registerConsultationIniialValues } from "@/app/utils/initialValues/registerConsultation"
 import { registerConsultationValidationSchema } from "@/app/utils/validations/registerCnsultation"
-import { Consultation } from "@/app/types/consultation"
 import { api } from "@/app/service/api"
+import { Consultation } from "@/app/types/Consultation"
 
 type Props = FormProps & {
     onCancel: () => void
-    onSuccess: () => void
+    onSuccess: (data: {consultation: Consultation}) => void
 }
 
 export default function ConsultationRegistrationForm({
@@ -22,15 +22,19 @@ export default function ConsultationRegistrationForm({
     onSuccess,
     ...rest
 }: Props) {
+    const { patientId } = useParams()
     const formik = useFormik({
         initialValues: registerConsultationIniialValues,
         validationSchema: registerConsultationValidationSchema,
-        async onSubmit(values) {
-            
-            values.symptoms = JSON.stringify(values.symptoms)
-            
+        async onSubmit({symptoms, temperature, ...rest}) {
             try {
+                const { data } = await api.post(`/consultation/${patientId}`, {
+                    ...rest,
+                    temperature: Number(temperature).toFixed(1),
+                    symptoms: JSON.stringify(symptoms),
+                })
                 
+                onSuccess(data)
             } catch (error) {
                 console.log(error)
             }
@@ -44,6 +48,7 @@ export default function ConsultationRegistrationForm({
                     label="Pressão Arterial Sistólica"
                 >
                     <Form.Control
+                        autoFocus
                         type="number"
                         min={1}
                         placeholder="Pressão Arterial Sistólica"

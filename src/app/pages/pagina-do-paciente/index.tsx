@@ -1,46 +1,47 @@
-import { useContext, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Button } from "react-bootstrap"
 import { BiPlus } from "react-icons/bi"
 import { GrReturn } from "react-icons/gr"
-import { FormularioDeConsulta } from "./formulario-de-consulta"
+// import { FormularioDeConsulta } from "./formulario-de-consulta"
 import { InfoPaciente } from "./info-paciente"
 import { TabelaDeConsultas } from "./tabela-de-consultas"
-import { Consulta, ConsultaCadastradaEvento, Mensagem } from "../../lib/minhas-interfaces-e-tipos"
+// import { Mensagem } from "../../lib/minhas-interfaces-e-tipos"
 import { api } from "../../lib/axios"
 import { useNavigate, useParams } from "react-router-dom"
-import { Notificacao } from "../../components/notificacao"
-import { Patient } from "@/app/types/patient"
+// import { Notificacao } from "../../components/notificacao"
+import { Patient } from "@/app/types/Patient"
 import ConsultationRegistrationForm from "@/app/components/forms/ConsultationRegistrationForm"
+import { Consultation } from "@/app/types/Consultation"
+import { RegisteredConsultationEvent } from "@/app/types/events/RegisteredConsultationEvent"
 
 export function PaginaDoPaciente() {
-  const [mensagens, setMensagens] = useState<Mensagem[]>([])
+  // const [mensagens, setMensagens] = useState<Mensagem[]>([])
   const [exibindoFormularioDeConsulta, setMostrarFormularioDeConsulta] = useState(false)
   const [patient, setPatient] = useState<Patient>()
-  const [consultas, setConsultas] = useState<Consulta[]>()
-  const { pacienteId } = useParams()
+  const [consultations, setConsultations] = useState<Consultation[]>()
+  const { patientId } = useParams()
   const navigate = useNavigate()
   const formRef = useRef(null)
   const infoPatientRef = useRef(null)
 
+  // function handleConsultaCadastrada({
+  //   consulta,
+  //   paciente,
+  // }: ConsultaCadastradaEvento) {
+  //   setPatient(paciente)
+  //   // adicionarConsulta(consulta)
+  // }
+
+  const atualizacoesDoPaciente = window.Echo.channel(`patient-updates-${patientId}`)
   
-  function handleConsultaCadastrada({
-    consulta,
-    paciente,
-  }: ConsultaCadastradaEvento) {
-    setPatient(paciente)
-    adicionarConsulta(consulta)
-  }
+  atualizacoesDoPaciente.listen('RegisteredConsultation', (event: RegisteredConsultationEvent) => {
+      addConsultation(event.consultation)
+    })
 
-  const atualizacoesDoPaciente = window.Echo.channel(`atualizacoes-do-paciente-${pacienteId}`)
-  
-  atualizacoesDoPaciente.listen('RegisteredConsultation', handleConsultaCadastrada)
+  function addConsultation(consulta: Consultation) {
+    if(consultations === undefined) return
 
-  function adicionarConsulta(consulta: Consulta) {
-    if(consultas === undefined) {
-      return
-    }
-
-    setConsultas([...consultas, consulta])
+    setConsultations([...consultations, consulta])
   }
 
   function rolarParaInfoPaciente() {
@@ -73,45 +74,42 @@ export function PaginaDoPaciente() {
     setMostrarFormularioDeConsulta(false)
   }
   
-  function removerMensagem(codigoDaMensagem: string) {
-    setMensagens(mensagens.filter((mensagen) => mensagen[2] !== codigoDaMensagem))
-  }
+  // function removerMensagem(codigoDaMensagem: string) {
+  //   setMensagens(mensagens.filter((mensagen) => mensagen[2] !== codigoDaMensagem))
+  // }
 
-  function adicionarMensagem(mensagem: Mensagem) {
-    setMensagens([...mensagens, mensagem])
-  }
+  // function adicionarMensagem(mensagem: Mensagem) {
+  //   setMensagens([...mensagens, mensagem])
+  // }
 
-  async function obterPaciente() {
+  async function fetchPatients() {
     try {
-      const response = await api.get(`patients/${pacienteId}`)
+      const response = await api.get(`patients/${patientId}`)
       console.log(response)
       
       setPatient(response.data.data)
-      obterConsultas()
+      fetchConsultations()
     } catch (error) {      
       console.log(error)
     }
   }
   
-  async function obterConsultas() {
+  async function fetchConsultations() {
     try {
-      const response = await api.get(`patients/${pacienteId}/consultations`)
-      setConsultas(response.data)
-      console.log(response.data)
+      const response = await api.get(`patients/${patientId}/consultations`)
+      setConsultations(response.data)
     } catch (error) {
       console.log(error)
     }
   }
 
   useEffect(() => {
-    obterPaciente()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pacienteId])
-
+    fetchPatients()
+  }, [patientId])
 
   return (
     <>
-      {mensagens && mensagens.slice().reverse().map(mensagem => (
+      {/* {mensagens && mensagens.slice().reverse().map(mensagem => (
         <Notificacao
           onClose={() => removerMensagem(mensagem[2])}
           variante={mensagem[1]}
@@ -119,7 +117,7 @@ export function PaginaDoPaciente() {
         >
           {mensagem[0]}
         </Notificacao>
-      ))}
+      ))} */}
       {patient ? (
         <>
           <InfoPaciente 
@@ -130,8 +128,13 @@ export function PaginaDoPaciente() {
             <section ref={formRef} className="p-3 mt-3 bg-secondary-subtle">
               <ConsultationRegistrationForm 
                 onCancel={esconderFormularioDeConsulta}
-                onSuccess={() => {
+                onSuccess={({ consultation }) => {
+                  addConsultation(consultation)
                   esconderFormularioDeConsulta()
+                  setPatient({
+                    ...patient,
+                    currentCondition: consultation.condition
+                  })
                 }}
               />
             </section>
@@ -143,17 +146,17 @@ export function PaginaDoPaciente() {
                 >
                   Voltar <GrReturn />
                 </Button>
-
                 <Button 
                   onClick={exibirFormularioDeConsulta} 
-                  size="lg">
+                  size="lg"
+                >
                   Cadastrar nova consulta <BiPlus/>
                 </Button>
               </div>
             )
           }
           <TabelaDeConsultas 
-            consultas={consultas}
+            consultations={consultations}
           />
         </>
       ) : (

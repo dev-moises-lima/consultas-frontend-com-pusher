@@ -1,9 +1,9 @@
-import { ItemDaTabelaPacientes } from "./item-da-tabela-pacientes";
-import { Col, Form, InputGroup, Row, Table } from "react-bootstrap";
-import { IoIosSearch } from "react-icons/io";
-import { useState } from "react";
-import { normalizar } from "../../lib/minhas-funcoes";
-import { Patient } from "@/app/types/patient";
+import { ItemDaTabelaPacientes } from "./item-da-tabela-pacientes"
+import { Col, Form, InputGroup, Row, Table } from "react-bootstrap"
+import { IoIosSearch } from "react-icons/io"
+import { useState } from "react"
+import { transformForSearch } from "../../lib/minhas-funcoes"
+import { Patient } from "@/app/types/Patient"
 
 interface TabelaDePacientesProps {
   pacientes: Patient[] | undefined
@@ -20,7 +20,7 @@ export function TabelaDePacientes({ pacientes }: TabelaDePacientesProps) {
 
   if (filtro) {
     pacientesFiltrados = pacientesFiltrados.filter((paciente) => {
-      return normalizar(paciente.name).includes(filtro)
+      return transformForSearch(paciente.name).includes(filtro)
     })
   }
 
@@ -41,7 +41,7 @@ export function TabelaDePacientes({ pacientes }: TabelaDePacientesProps) {
                   aria-label="Pesquisar"
                   name="filtro"
                   onChange={(event) =>
-                    setFiltro(normalizar(event.target.value))
+                    setFiltro(transformForSearch(event.target.value))
                   }
                 />
                 <InputGroup.Text>

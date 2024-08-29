@@ -1,13 +1,4 @@
-type RegisterConsultationIniialValues = {
-    diastolicBloodPressure: string
-    systolicBloodPressure: string
-    heartRate: string
-    respiratoryRate: "",
-    temperature: string
-    symptoms: string[] | string
-}
-
-export const registerConsultationIniialValues : RegisterConsultationIniialValues = {
+export const registerConsultationIniialValues = {
     diastolicBloodPressure: "",
     systolicBloodPressure: "",
     heartRate: "",

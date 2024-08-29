@@ -1,31 +1,31 @@
-import moment from "moment";
-import { calcularStatusDaCondicao, obterCorDaCondicao } from "../../lib/minhas-funcoes";
-import { Consulta } from "../../lib/minhas-interfaces-e-tipos";
+import moment from "moment"
+import { calcularStatusDaCondicao, obterCorDaCondicao } from "../../lib/minhas-funcoes"
+import { Consultation } from "@/app/types/Consultation"
 
 interface ItemDaTabelaConsultasProps {
-  consulta: Consulta
+  consultation: Consultation
 }
 
 export function ItemDaTabelaConsultas({
-  consulta
+  consultation
 } : ItemDaTabelaConsultasProps) {
 
-  const corDaCondicao = obterCorDaCondicao(consulta.condicao)
-  const statusDaPressaoArterialDiastolica = calcularStatusDaCondicao("pressao arterial diastólica", consulta.pressao_arterial_diastolica)
-  const statusDaPressaoArterialSistolica = calcularStatusDaCondicao("pressao arterial sistólica", consulta.pressao_arterial_sistolica)
-  const statusDaFrequenciaCardiaca = calcularStatusDaCondicao("frequência cardíaca", consulta.frequencia_cardiaca)
-  const statusDaRespiracao = calcularStatusDaCondicao("respiracao", consulta.respiracao)
-  const statusDaTemperatura = calcularStatusDaCondicao("temperatura", consulta.temperatura)
+  const corDaCondicao = obterCorDaCondicao(consultation.condition)
+  const statusDaPressaoArterialDiastolica = calcularStatusDaCondicao("pressao arterial diastólica", consultation.diastolicBloodPressure)
+  const statusDaPressaoArterialSistolica = calcularStatusDaCondicao("pressao arterial sistólica", consultation.systolicBloodPressure)
+  const statusDaFrequenciaCardiaca = calcularStatusDaCondicao("frequência cardíaca", consultation.heartRate)
+  const statusDaRespiracao = calcularStatusDaCondicao("respiracao", consultation.respiratoryRate)
+  const statusDaTemperatura = calcularStatusDaCondicao("temperatura", consultation.temperature)
 
   return (
     <tr>
-      <td className={`text-${corDaCondicao}`}>{consulta.condicao}</td>
+      <td className={`text-${corDaCondicao}`}>{consultation.condition}</td>
       <td className={`text-${statusDaPressaoArterialSistolica[1]}`}>{statusDaPressaoArterialSistolica[0]}</td>
       <td className={`text-${statusDaPressaoArterialDiastolica[1]}`}>{statusDaPressaoArterialDiastolica[0]}</td>
       <td className={`text-${statusDaFrequenciaCardiaca[1]}`}>{statusDaFrequenciaCardiaca[0]}</td>
       <td className={`text-${statusDaRespiracao[1]}`}>{statusDaRespiracao[0]}</td>
       <td className={`text-${statusDaTemperatura[1]}`}>{statusDaTemperatura[0]}</td>
-      <td>{moment(consulta.created_at).format("DD/MM/YYYY")}</td>
+      <td>{moment(consultation.created_at).format("DD/MM/YYYY")}</td>
     </tr>
   )
 }

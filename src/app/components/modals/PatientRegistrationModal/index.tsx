@@ -1,6 +1,6 @@
 import Modal, { ModalProps } from "react-bootstrap/Modal"
 import PatientRegistrationForm from "@/app/components/forms/PatientRegistrationForm"
-import { Patient } from "@/app/types/patient"
+import { Patient } from "@/app/types/pwatient"
 
 type Props = ModalProps & {
 	onCancel: () => void
