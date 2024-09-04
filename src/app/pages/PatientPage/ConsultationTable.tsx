@@ -1,16 +1,18 @@
 import { useState } from "react"
 import Table from "react-bootstrap/esm/Table"
-import { ItemDaTabelaConsultas } from "./ConsultationTableRow"
+import { ConsultationTableRow } from "./ConsultationTableRow"
 import { Col, Form, Row } from "react-bootstrap"
 
 import { Consultation } from "@/app/types/Consultation"
 
 interface Props {
   consultations: Consultation[] | undefined
+  selectConsultationForDetails: (consultation: Consultation) => void
 }
 
 export function ConsultationTable({
-  consultations
+  consultations,
+  selectConsultationForDetails
 }: Props) {
   const [filter, setFilter] = useState("recentes") 
 
@@ -47,19 +49,16 @@ export function ConsultationTable({
             <thead>
               <tr>
                 <th>Resultado da consulta</th>
-                <th>Pressõa arterial sistólica</th>
-                <th>Pressõa arterial diastólica</th>
-                <th>Frequência cardíaca</th>
-                <th>Respiração</th>
-                <th>Temperatura</th>
                 <th>Data da consulta</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
               {consultasComFiltro!.map(consultation => (
-                <ItemDaTabelaConsultas 
+                <ConsultationTableRow 
                   key={consultation.id}
                   consultation={consultation}
+                  selectConsultationForDetails={selectConsultationForDetails}
                 />
               ))}
             </tbody>

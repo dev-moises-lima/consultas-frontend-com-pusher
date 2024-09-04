@@ -5,6 +5,7 @@ import AccordionHeader from "react-bootstrap/AccordionHeader"
 import Accordion from "react-bootstrap/Accordion"
 import AccordionItem from "react-bootstrap/AccordionItem"
 import { Badge } from "react-bootstrap"
+import moment from "moment"
 
 type Props = {
     consultations: Consultation[]
@@ -25,7 +26,7 @@ export function ConsultationAccordion({
                     <AccordionHeader >
                         <div className="w-100 d-flex justify-content-between">
                             <div>{consultation.condition}</div>
-                            <div>{consultation.heartRate}</div>
+                            <div>{consultation.created_at}</div>
                         </div>
                     </AccordionHeader>
                     <AccordionBody>
@@ -39,3 +40,11 @@ export function ConsultationAccordion({
         </Accordion>
     )
 }
+
+// function ConsultationAccordionItem(consultation: Consultation) {
+//     const date = moment(consultation.created_at)
+
+//     return(
+
+//     )
+// }

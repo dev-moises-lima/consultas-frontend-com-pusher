@@ -8,6 +8,7 @@ import { registerPatientValidationSchema } from '@/app/utils/validations/registe
 import { useMask } from '@react-input/mask'
 import { api } from "@/app/service/api"
 import { Patient } from '@/app/types/Patient'
+import Swal from "sweetalert2"
 
 interface Props {
     onCancel: () => void
@@ -44,6 +45,14 @@ export default function PatientRegistrationForm ({
                 const response = await api.post("/patients", dados)
                 onSuccess(response.data as Patient)
                 setLoadingRequest(false)
+                Swal.fire({
+                    title: "Paciente Cadastrado!",
+                    text: "O paciente foi cadastrado com sucesso!",
+                    icon: "success",
+                    customClass: {
+                        confirmButton: "btn btn-primary"
+                    }
+                })
             } catch (error: any) {
                 console.log(error);
                 

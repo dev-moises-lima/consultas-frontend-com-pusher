@@ -14,10 +14,13 @@ import ConsultationRegistrationForm from "@/app/components/forms/ConsultationReg
 import { Consultation } from "@/app/types/Consultation"
 import { RegisteredConsultationEvent } from "@/app/types/events/RegisteredConsultationEvent"
 import { ConsultationAccordion } from "./ConsultationAccordion"
+import { ConsultationDetailsModal } from "@/app/components/modals/ConsultationDetailsModal"
 
 export function PatientPage() {
   // const [mensagens, setMensagens] = useState<Mensagem[]>([])
   const [exibindoFormularioDeConsulta, setMostrarFormularioDeConsulta] = useState(false)
+  const [openDetailsModal, setOpenDetailsModal] = useState(false)
+  const [consultationSelected, setConsultationSelected] = useState<Consultation>()
   const { state } = useLocation()
   const [patient, setPatient] = useState<Patient>(state as Patient)
   const [consultations, setConsultations] = useState<Consultation[]>()
@@ -71,26 +74,15 @@ export function PatientPage() {
     setMostrarFormularioDeConsulta(false)
   }
   
-  // function removerMensagem(codigoDaMensagem: string) {
-  //   setMensagens(mensagens.filter((mensagen) => mensagen[2] !== codigoDaMensagem))
-  // }
+  function selectConsultationForDetails(consultation: Consultation) {
+    setConsultationSelected(consultation)
+    setOpenDetailsModal(true)
+  }
 
-  // function adicionarMensagem(mensagem: Mensagem) {
-  //   setMensagens([...mensagens, mensagem])
-  // }
+  function closeDetailsModal() {
+    setOpenDetailsModal(false)
+  }
 
-  // async function fetchPatient() {
-  //   try {
-  //     const response = await api.get(`patients/${patientId}`)
-  //     console.log(response)
-      
-  //     setPatient(response.data.data)
-  //     fetchConsultations()
-  //   } catch (error) {      
-  //     console.log(error)
-  //   }
-  // }
-  
   async function fetchConsultations() {
     try {
       const { data } = await api.get(`patients/${patientId}/consultations`)
@@ -106,15 +98,6 @@ export function PatientPage() {
 
   return (
     <>
-      {/* {mensagens && mensagens.slice().reverse().map(mensagem => (
-        <Notificacao
-          onClose={() => removerMensagem(mensagem[2])}
-          variante={mensagem[1]}
-          key={mensagem[2]}
-        >
-          {mensagem[0]}
-        </Notificacao>
-      ))} */}
       {patient ? (
         <>
           <PatientInfo 
@@ -154,6 +137,7 @@ export function PatientPage() {
           }
           <ConsultationTable 
             consultations={consultations}
+            selectConsultationForDetails={selectConsultationForDetails}
           />
         </>
       ) : (
@@ -162,6 +146,13 @@ export function PatientPage() {
             Carregando dados do paciente...
           </h1>
         </div>
+      )}
+      {consultationSelected && (
+        <ConsultationDetailsModal
+          show={openDetailsModal} 
+          consultation={consultationSelected}
+          onHide={closeDetailsModal}
+        />
       )}
     </>
   )

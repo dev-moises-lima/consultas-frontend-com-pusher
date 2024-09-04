@@ -9,5 +9,6 @@ export type Consultation = {
     respiratoryRate: number
     temperature: number
     condition: PatientCondition
+    percentageOfSymptomsFelt: number
     symptoms: string[]
 }

@@ -15,12 +15,10 @@ export function App() {
       addPatient(event.patient)
     })
 
-  mainUpdatesChannel.listen("UpdatedPatient", (event: any) => {
-    const patient = event.data
+  mainUpdatesChannel.listen("UpdatedPatient", ({patient}: UpdatedPatientEvent) => {
     const newPatients = patients?.map((currentPatient) => {
       return currentPatient.id === patient.id ? patient : currentPatient
     })
-
     setPatients(newPatients)
   })
 
