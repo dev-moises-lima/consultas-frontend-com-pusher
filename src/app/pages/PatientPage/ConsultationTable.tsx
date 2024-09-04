@@ -1,6 +1,6 @@
 import { useState } from "react"
 import Table from "react-bootstrap/esm/Table"
-import { ItemDaTabelaConsultas } from "./intem-da-tabela-consulta"
+import { ItemDaTabelaConsultas } from "./ConsultationTableRow"
 import { Col, Form, Row } from "react-bootstrap"
 
 import { Consultation } from "@/app/types/Consultation"
@@ -9,7 +9,7 @@ interface Props {
   consultations: Consultation[] | undefined
 }
 
-export function TabelaDeConsultas({
+export function ConsultationTable({
   consultations
 }: Props) {
   const [filter, setFilter] = useState("recentes") 

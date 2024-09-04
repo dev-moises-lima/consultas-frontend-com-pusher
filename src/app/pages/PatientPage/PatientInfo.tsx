@@ -1,28 +1,27 @@
 import { Col, Row, Image, Stack, Badge, Placeholder } from "react-bootstrap";
-import { CondicaoDoPaciente } from "../../lib/minhas-interfaces-e-tipos";
+import { PatientCondition } from "@/app/types/PatientCondition";
 import moment from "moment";
 import { useState } from "react";
-import { obterCorDaCondicao } from "../../lib/minhas-funcoes";
+import { getConditionColor } from "@/app/utils/functions/getConditionColor";
 import { Patient } from "@/app/types/Patient";
 
-interface InfoPacienteProps {
+interface PatientInfoProps {
   paciente: Patient
   sectionRef: React.MutableRefObject<null>
 }
 
-export function InfoPaciente({
+export function PatientInfo({
   paciente,
   sectionRef
-} : InfoPacienteProps) {
+} : PatientInfoProps) {
   const [fotoCarregada, setFotoCarregada] = useState(false)
+  
   const hoje = moment()
   const dataDeNascimento = moment(paciente.dateOfBirth , "YYYY/MM/DD")
   const idadeDoPaciente = hoje.diff(dataDeNascimento, "year")
 
-  const condicaoDoPaciente: CondicaoDoPaciente = paciente.currentCondition
-
-  const corDaCondicao = obterCorDaCondicao(condicaoDoPaciente)
-  
+  const condicaoDoPaciente: PatientCondition = paciente.currentCondition
+  const corDaCondicao = getConditionColor(condicaoDoPaciente)
   
   return (
     <section ref={sectionRef} className="p-3 bg-info-subtle rounded-2">

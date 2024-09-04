@@ -1,6 +1,6 @@
 import { FormEvent, useContext, useEffect, useState } from "react"
 import { Button, Col, FloatingLabel, Form, Row, Stack } from "react-bootstrap"
-import { calcularStatusDaCondicao, generateUUID, obterMensagemDeErro } from "../../lib/minhas-funcoes.ts"
+import { calculateConditionStatus, generateUUID, obterMensagemDeErro } from "../../lib/minhas-funcoes.ts"
 import { api } from "../../lib/axios.ts"
 import { Consulta, ErrosDeRealizacaoDeConsulta, Mensagem   } from "../../lib/minhas-interfaces-e-tipos.ts"
 import { AppContext } from "../../contexts/AppContext.tsx"
@@ -39,11 +39,11 @@ export function FormularioDeConsulta({
   const [exibindoCheckBoxesDeSintomas, setExibindoCheckBoxesDeSintomas] = useState(false)
   const [boatoFinalizarAtivo, setBoatoFinalizarAtivo] = useState(true)
 
-  const statusDaPressaoArterialDiastolica = calcularStatusDaCondicao("pressao arterial diastólica", Number(pressaoArterialDiastolica))
-  const statusDaPressaoArterialSistolica = calcularStatusDaCondicao("pressao arterial sistólica", Number(pressaoArterialSistolica))
-  const statusDaFrequenciaCardiaca = calcularStatusDaCondicao("frequência cardíaca",Number(frequenciaCardiaca))
-  const statusDaRespiracao = calcularStatusDaCondicao("respiracao", Number(respiracao))
-  const statusDaTemperatura = calcularStatusDaCondicao("temperatura", Number(temperatura))
+  const statusDaPressaoArterialDiastolica = calculateConditionStatus("pressao arterial diastólica", Number(pressaoArterialDiastolica))
+  const statusDaPressaoArterialSistolica = calculateConditionStatus("pressao arterial sistólica", Number(pressaoArterialSistolica))
+  const statusDaFrequenciaCardiaca = calculateConditionStatus("frequência cardíaca",Number(frequenciaCardiaca))
+  const statusDaRespiracao = calculateConditionStatus("respiracao", Number(respiracao))
+  const statusDaTemperatura = calculateConditionStatus("temperatura", Number(temperatura))
   const camposDoFormularioValidos = validarCamposDoFormulário()
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,4 +1,4 @@
-import { CondicaoDoPaciente } from "@/app/lib/minhas-interfaces-e-tipos"
+import { PatientCondition } from "@/app/types/PatientCondition"
 
 export type Patient = {
     id: number
@@ -7,5 +7,5 @@ export type Patient = {
     dateOfBirth: string
     telephone: string
     photoUrl: string
-    currentCondition: CondicaoDoPaciente
+    currentCondition: PatientCondition
 }

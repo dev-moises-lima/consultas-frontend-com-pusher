@@ -6,7 +6,7 @@ import { FormikErrors, useFormik } from "formik"
 import { RegisterPatientInitialValues, registerPatientIniialValues } from '@/app/utils/initialValues/registerPatient'
 import { registerPatientValidationSchema } from '@/app/utils/validations/registerPatient'
 import { useMask } from '@react-input/mask'
-import { api } from '@/app/lib/axios'
+import { api } from "@/app/service/api"
 import { Patient } from '@/app/types/Patient'
 
 interface Props {
@@ -42,7 +42,7 @@ export default function PatientRegistrationForm ({
 
             try {
                 const response = await api.post("/patients", dados)
-                onSuccess(response.data.data as Patient)
+                onSuccess(response.data as Patient)
                 setLoadingRequest(false)
             } catch (error: any) {
                 console.log(error);
@@ -79,7 +79,8 @@ export default function PatientRegistrationForm ({
                 <Form.Label>Nome:</Form.Label>
                 <Form.Control 
                     autoFocus
-                    {...formik.getFieldProps("name")}
+                    value={formik.values.name}
+                    onChange={formik.handleChange}
                     isInvalid={!!(formik.touched.name && formik.errors.name)}
                 />
                 <Form.Control.Feedback type='invalid'>
@@ -92,7 +93,8 @@ export default function PatientRegistrationForm ({
                 <Form.Label>CPF:</Form.Label>
                 <Form.Control
                     ref={cpfRef}
-                    {...formik.getFieldProps("cpf")}
+                    value={formik.values.cpf}
+                    onChange={formik.handleChange}
                     isInvalid={!!(formik.touched.cpf && formik.errors.cpf)}
                 />
                 <Form.Control.Feedback type='invalid'>
@@ -105,7 +107,8 @@ export default function PatientRegistrationForm ({
                 <Form.Label>Data de nascimento:</Form.Label>
                 <Form.Control
                     ref={dateRef}
-                    {...formik.getFieldProps("dateOfBirth")}
+                    value={formik.values.dateOfBirth}
+                    onChange={formik.handleChange}
                     isInvalid={!!(formik.touched.dateOfBirth && formik.errors.dateOfBirth)}
                 />
                 <Form.Control.Feedback type='invalid'>
@@ -118,7 +121,8 @@ export default function PatientRegistrationForm ({
                 <Form.Label>Telefone:</Form.Label>
                 <Form.Control
                     ref={telephoneRef}
-                    {...formik.getFieldProps("telephone")}
+                    value={formik.values.telephone}
+                    onChange={formik.handleChange}
                     isInvalid={!!(formik.touched.telephone && formik.errors.telephone)}
                 />
                 <Form.Control.Feedback type='invalid'>

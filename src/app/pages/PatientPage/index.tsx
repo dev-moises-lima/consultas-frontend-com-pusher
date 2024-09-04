@@ -3,18 +3,19 @@ import { Button } from "react-bootstrap"
 import { BiPlus } from "react-icons/bi"
 import { GrReturn } from "react-icons/gr"
 // import { FormularioDeConsulta } from "./formulario-de-consulta"
-import { InfoPaciente } from "./info-paciente"
-import { TabelaDeConsultas } from "./tabela-de-consultas"
+import { PatientInfo } from "./PatientInfo"
+import { ConsultationTable } from "./ConsultationTable"
 // import { Mensagem } from "../../lib/minhas-interfaces-e-tipos"
-import { api } from "../../lib/axios"
+import { api } from "@/app/service/api"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 // import { Notificacao } from "../../components/notificacao"
 import { Patient } from "@/app/types/Patient"
 import ConsultationRegistrationForm from "@/app/components/forms/ConsultationRegistrationForm"
 import { Consultation } from "@/app/types/Consultation"
 import { RegisteredConsultationEvent } from "@/app/types/events/RegisteredConsultationEvent"
+import { ConsultationAccordion } from "./ConsultationAccordion"
 
-export function PaginaDoPaciente() {
+export function PatientPage() {
   // const [mensagens, setMensagens] = useState<Mensagem[]>([])
   const [exibindoFormularioDeConsulta, setMostrarFormularioDeConsulta] = useState(false)
   const { state } = useLocation()
@@ -25,14 +26,15 @@ export function PaginaDoPaciente() {
   const formRef = useRef(null)
   const infoPatientRef = useRef(null)
   
-  
+  if(!state) {
+    navigate("/")
+  }
 
-  const atualizacoesDoPaciente = window.Echo.channel(`patient-updates-${patientId}`)
-  
-  atualizacoesDoPaciente.listen('RegisteredConsultation', (event: RegisteredConsultationEvent) => {
+  window.Echo.channel(`patient-updates-${patientId}`)
+    .listen('RegisteredConsultation', (event: RegisteredConsultationEvent) => {
       addConsultation(event.consultation)
     })
-
+  
   function addConsultation(consulta: Consultation) {
     if(consultations === undefined) return
 
@@ -91,8 +93,8 @@ export function PaginaDoPaciente() {
   
   async function fetchConsultations() {
     try {
-      const response = await api.get(`patients/${patientId}/consultations`)
-      setConsultations(response.data)
+      const { data } = await api.get(`patients/${patientId}/consultations`)
+      setConsultations(data)
     } catch (error) {
       console.log(error)
     }
@@ -115,7 +117,7 @@ export function PaginaDoPaciente() {
       ))} */}
       {patient ? (
         <>
-          <InfoPaciente 
+          <PatientInfo 
             paciente={patient}
             sectionRef={infoPatientRef}
           />
@@ -123,8 +125,8 @@ export function PaginaDoPaciente() {
             <section ref={formRef} className="p-3 mt-3 bg-secondary-subtle">
               <ConsultationRegistrationForm 
                 onCancel={esconderFormularioDeConsulta}
-                onSuccess={({ consultation }) => {
-                  addConsultation(consultation)
+                onSuccess={(consultation) => {
+                  addConsultation(consultation as Consultation)
                   esconderFormularioDeConsulta()
                   setPatient({
                     ...patient,
@@ -150,7 +152,7 @@ export function PaginaDoPaciente() {
               </div>
             )
           }
-          <TabelaDeConsultas 
+          <ConsultationTable 
             consultations={consultations}
           />
         </>

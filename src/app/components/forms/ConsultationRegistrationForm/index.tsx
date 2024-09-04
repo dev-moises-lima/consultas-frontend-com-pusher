@@ -1,3 +1,5 @@
+import { useState } from "react"
+
 import Form, { FormProps } from "react-bootstrap/Form"
 import FloatingLabel from "react-bootstrap/FloatingLabel"
 import Stack from "react-bootstrap/Stack"
@@ -6,6 +8,7 @@ import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 import { useParams } from "react-router-dom"
 import { useFormik } from "formik"
+import Swal from "sweetalert2"
 
 import { registerConsultationIniialValues } from "@/app/utils/initialValues/registerConsultation"
 import { registerConsultationValidationSchema } from "@/app/utils/validations/registerCnsultation"
@@ -14,7 +17,7 @@ import { Consultation } from "@/app/types/Consultation"
 
 type Props = FormProps & {
     onCancel: () => void
-    onSuccess: (data: {consultation: Consultation}) => void
+    onSuccess: (consultation: Consultation) => void
 }
 
 export default function ConsultationRegistrationForm({
@@ -23,107 +26,128 @@ export default function ConsultationRegistrationForm({
     ...rest
 }: Props) {
     const { patientId } = useParams()
+    const [loadingRequest, setLoadingRequest] = useState(false)
     const formik = useFormik({
         initialValues: registerConsultationIniialValues,
         validationSchema: registerConsultationValidationSchema,
-        async onSubmit({symptoms, temperature, ...rest}) {
+        async onSubmit({symptoms, temperature, ...rest}, { setErrors }) {
             try {
+                setLoadingRequest(true)
+
                 const { data } = await api.post(`/consultation/${patientId}`, {
                     ...rest,
                     temperature: Number(temperature).toFixed(1),
                     symptoms: JSON.stringify(symptoms),
                 })
                 
+                console.log(data);
+                
+                setLoadingRequest(false)
                 onSuccess(data)
-            } catch (error) {
+                Swal.fire({
+                    title: "Consulta Registrada!",
+                    text: "Sua consulta foi registrada com sucesso!",
+                    icon: "success",
+                    customClass: {
+                        confirmButton: "btn btn-primary"
+                    }
+                })
+            } catch (error: any) {
                 console.log(error)
+                const errors = error.response.data.errors
+                setErrors(errors)
+                setLoadingRequest(false)
             }
         }
     })
 
     return (
         <Form onSubmit={formik.handleSubmit} {...rest}>
-            <Form.Group controlId="systolicBloodPressure">
-                <FloatingLabel
-                    label="Pressão Arterial Sistólica"
-                >
-                    <Form.Control
-                        autoFocus
-                        type="number"
-                        min={1}
-                        placeholder="Pressão Arterial Sistólica"
-                        {...formik.getFieldProps("systolicBloodPressure")}
-                        isInvalid={!!(formik.touched.systolicBloodPressure && formik.errors.systolicBloodPressure)}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                        {formik.errors.systolicBloodPressure}
-                    </Form.Control.Feedback>
-                </FloatingLabel>
-            </Form.Group>
-            <Form.Group controlId="diastolicBloodPressure" className="mt-3">
-                <FloatingLabel
-                    label="Pressão Arterial Diastólica"
-                >                    
-                    <Form.Control
-                        type="number"
-                        min={1}
-                        placeholder="Pressão Arterial Diastólica"
-                        {...formik.getFieldProps("diastolicBloodPressure")}
-                        isInvalid={!!(formik.touched.diastolicBloodPressure && formik.errors.diastolicBloodPressure)}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                        {formik.errors.diastolicBloodPressure}
-                    </Form.Control.Feedback>
-                </FloatingLabel>
-            </Form.Group>
-            <Form.Group controlId="heartRate" className="mt-3">
-                <FloatingLabel
-                    label="Frequência Cardíaca"
-                >
-                    <Form.Control
-                        type="number"
-                        min={1}
-                        placeholder="Frequência Cardíaca"
-                        {...formik.getFieldProps("heartRate")}
-                        isInvalid={!!(formik.touched.heartRate && formik.errors.heartRate)}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                        {formik.errors.heartRate}
-                    </Form.Control.Feedback>
-                </FloatingLabel>
-            </Form.Group>
-            <Form.Group controlId="respiratoryRate" className="mt-3">
-                <FloatingLabel
-                    label="Frequência Respiratória"
-                >
-                    <Form.Control
-                        type="number"
-                        min={1}
-                        placeholder="Frequência Respiratória"
-                        {...formik.getFieldProps("respiratoryRate")}
-                        isInvalid={!!(formik.touched.respiratoryRate && formik.errors.respiratoryRate)}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                        {formik.errors.respiratoryRate}
-                    </Form.Control.Feedback>
-                </FloatingLabel>
-            </Form.Group>
-            <Form.Group controlId="temperature" className="mt-3">
-                <FloatingLabel
-                    label="Temperatura"
-                >
-                    <Form.Control
-                        type="number"
-                        min={1}
-                        placeholder="Temperatura"
-                        {...formik.getFieldProps("temperature")}
-                        isInvalid={!!(formik.touched.temperature && formik.errors.temperature)}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                        {formik.errors.temperature}
-                    </Form.Control.Feedback>
-                </FloatingLabel>
-            </Form.Group>
+            <FloatingLabel
+                className="mb-3"
+                label="Pressão Arterial Sistólica"
+                controlId="systolicBloodPressure"
+            >
+                <Form.Control
+                    autoFocus
+                    type="number"
+                    min={1}
+                    placeholder="Pressão Arterial Sistólica"
+                    onChange={formik.handleChange}
+                    isInvalid={!!(formik.touched.systolicBloodPressure && formik.errors.systolicBloodPressure)}
+                />
+                <Form.Control.Feedback type="invalid">
+                    {formik.errors.systolicBloodPressure}
+                </Form.Control.Feedback>
+            </FloatingLabel>
+            <FloatingLabel
+                className="mb-3"
+                label="Pressão Arterial Diastólica"
+                controlId="diastolicBloodPressure"
+            >                    
+                <Form.Control
+                    type="number"
+                    min={1}
+                    placeholder="Pressão Arterial Diastólica"
+                    value={formik.values.diastolicBloodPressure}
+                    onChange={formik.handleChange}
+                    isInvalid={!!(formik.touched.diastolicBloodPressure && formik.errors.diastolicBloodPressure)}
+                />
+                <Form.Control.Feedback type="invalid">
+                    {formik.errors.diastolicBloodPressure}
+                </Form.Control.Feedback>
+            </FloatingLabel>
+            <FloatingLabel
+                className="mb-3"
+                label="Frequência Cardíaca"
+                controlId="heartRate"
+            >
+                <Form.Control
+                    type="number"
+                    min={1}
+                    placeholder="Frequência Cardíaca"
+                    value={formik.values.heartRate}
+                    onChange={formik.handleChange}
+                    isInvalid={!!(formik.touched.heartRate && formik.errors.heartRate)}
+                />
+                <Form.Control.Feedback type="invalid">
+                    {formik.errors.heartRate}
+                </Form.Control.Feedback>
+            </FloatingLabel>
+            <FloatingLabel
+                className="mb-3"
+                label="Frequência Respiratória"
+                controlId="respiratoryRate"
+            >
+                <Form.Control
+                    type="number"
+                    min={1}
+                    placeholder="Frequência Respiratória"
+                    value={formik.values.respiratoryRate}
+                    onChange={formik.handleChange}
+                    isInvalid={!!(formik.touched.respiratoryRate && formik.errors.respiratoryRate)}
+                />
+                <Form.Control.Feedback type="invalid">
+                    {formik.errors.respiratoryRate}
+                </Form.Control.Feedback>
+            </FloatingLabel>
+            <FloatingLabel
+                className="mb-3"
+                label="Temperatura"
+                controlId="temperature"
+            >
+                <Form.Control
+                    type="number"
+                    min={1}
+                    placeholder="Temperatura"
+                    value={formik.values.temperature}
+                    onChange={formik.handleChange}
+                    isInvalid={!!(formik.touched.temperature && formik.errors.temperature)}
+                />
+                <Form.Control.Feedback type="invalid">
+                    {formik.errors.temperature}
+                </Form.Control.Feedback>
+            </FloatingLabel>
             <Row className="mt-3">
                 <Col>
                     <Stack gap={1}>
@@ -239,12 +263,14 @@ export default function ConsultationRegistrationForm({
             >
                 <Button
                     type="submit"
+                    disabled={loadingRequest}
                 >
-                    Finalizar Consulta
+                    {loadingRequest ? "Finalizando Consulta..." : "Finalizar Consulta"}
                 </Button>
                 <Button
                     type="button"
                     variant="secondary"
+                    disabled={loadingRequest}
                     onClick={onCancel}
                 >
                     Cancelar

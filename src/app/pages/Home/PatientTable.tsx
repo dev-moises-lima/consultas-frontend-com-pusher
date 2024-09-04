@@ -1,34 +1,36 @@
-import { ItemDaTabelaPacientes } from "./item-da-tabela-pacientes"
+import { ItemDaTabelaPacientes } from "./PatientTableRow"
 import { Col, Form, InputGroup, Row, Table } from "react-bootstrap"
 import { IoIosSearch } from "react-icons/io"
 import { useState } from "react"
-import { transformForSearch } from "../../lib/minhas-funcoes"
+import { transformForSearch } from "@/app/utils/functions/transformForSearch" 
 import { Patient } from "@/app/types/Patient"
 
 interface TabelaDePacientesProps {
-  pacientes: Patient[] | undefined
+  patients: Patient[] | undefined
 }
 
-export function TabelaDePacientes({ pacientes }: TabelaDePacientesProps) {
+export function PatientTable({ 
+  patients 
+}: TabelaDePacientesProps) {
   const [filtro, setFiltro] = useState("")
 
-  let pacientesFiltrados: Patient[] = []
+  let filteredPatients: Patient[] = []
 
-  if (pacientes) {
-    pacientesFiltrados = pacientes.slice()
+  if (patients) {
+    filteredPatients = patients.slice()
   }
 
   if (filtro) {
-    pacientesFiltrados = pacientesFiltrados.filter((paciente) => {
-      return transformForSearch(paciente.name).includes(filtro)
+    filteredPatients = filteredPatients.filter((patient) => {
+      return transformForSearch(patient.name).includes(filtro)
     })
   }
 
   return (
     <div className="p-3 p-md-4 bg-secondary-subtle rounded-2 mt-4">
-      {pacientes === undefined ? (
+      {patients === undefined ? (
         <h2 className="text-center text-info">Carregando Pacientes...</h2>
-      ) : pacientes.length === 0 ? (
+      ) : patients.length === 0 ? (
         <h2 className="text-center text-info">Nenhum paciente cadastrado</h2>
       ) : (
         <>
@@ -62,8 +64,8 @@ export function TabelaDePacientes({ pacientes }: TabelaDePacientesProps) {
               </tr>
             </thead>
             <tbody>
-              {pacientesFiltrados.reverse().map((paciente) => (
-                <ItemDaTabelaPacientes key={paciente.id} paciente={paciente} />
+              {filteredPatients.reverse().map((patient) => (
+                <ItemDaTabelaPacientes key={patient.id} paciente={patient} />
               ))}
             </tbody>
           </Table>

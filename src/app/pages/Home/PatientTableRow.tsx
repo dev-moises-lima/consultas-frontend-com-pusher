@@ -1,22 +1,22 @@
 import moment from "moment";
 import { Button } from "react-bootstrap";
 import { FaArrowRight } from "react-icons/fa";
-import { obterCorDaCondicao } from "../../lib/minhas-funcoes";
+import { getConditionColor } from "@/app/utils/functions/getConditionColor";
 import { useNavigate } from "react-router-dom";
 import { Patient } from "@/app/types/Patient";
 
-interface ItemDaTabelaPacientesProps {
+interface PatientTableRowProps {
   paciente: Patient
 }
 
 export function ItemDaTabelaPacientes({
   paciente: patient,
-}: ItemDaTabelaPacientesProps) {
+}: PatientTableRowProps) {
   const navigate = useNavigate()
   const hoje = moment()
   const dataDeNascimento = moment(patient.dateOfBirth, "YYYY/MM/DD")
   const idadeDoPaciente = hoje.diff(dataDeNascimento, "year")
-  const corDaCondicao = obterCorDaCondicao(patient.currentCondition)
+  const corDaCondicao = getConditionColor(patient.currentCondition)
 
   return (
     <tr>
