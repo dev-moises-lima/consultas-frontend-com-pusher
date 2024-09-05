@@ -16,10 +16,10 @@ export function ConsultationTable({
 }: Props) {
   const [filter, setFilter] = useState("recentes") 
 
-  let consultasComFiltro = consultations
+  let consultationsWithFilter = consultations
 
   if(filter === "recentes") {
-    consultasComFiltro = consultations?.slice().reverse()
+    consultationsWithFilter = consultations?.slice().reverse()
   }
 
   return (
@@ -54,7 +54,7 @@ export function ConsultationTable({
               </tr>
             </thead>
             <tbody>
-              {consultasComFiltro!.map(consultation => (
+              {consultationsWithFilter!.map(consultation => (
                 <ConsultationTableRow 
                   key={consultation.id}
                   consultation={consultation}
