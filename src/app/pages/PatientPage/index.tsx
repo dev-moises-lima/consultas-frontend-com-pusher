@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import Button from "react-bootstrap/Button"
 import { BiPlus } from "react-icons/bi"
 import { GrReturn } from "react-icons/gr"

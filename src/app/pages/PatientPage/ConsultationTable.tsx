@@ -45,7 +45,7 @@ export function ConsultationTable({
               </Form.Select>
             </Col>
           </Row>
-          <Table className="m-0" striped bordered>
+          <Table className="m-0" striped bordered hover>
             <thead>
               <tr>
                 <th>Resultado da consulta</th>

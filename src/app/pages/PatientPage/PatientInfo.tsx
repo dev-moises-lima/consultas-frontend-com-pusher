@@ -1,5 +1,4 @@
 import { Col, Row, Image, Stack, Badge, Placeholder } from "react-bootstrap";
-import { PatientCondition } from "@/app/types/PatientCondition";
 import moment from "moment";
 import { useState } from "react";
 import { getConditionColor } from "@/app/utils/functions/getConditionColor";
