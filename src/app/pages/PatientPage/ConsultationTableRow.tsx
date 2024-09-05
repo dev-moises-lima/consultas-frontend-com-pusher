@@ -1,5 +1,4 @@
 import moment from "moment"
-import { calculateConditionStatus } from "@/app/utils/functions/calculateConditionStatus"
 import { Consultation } from "@/app/types/Consultation"
 import { getConditionColor } from "@/app/utils/functions/getConditionColor"
 import { Button } from "react-bootstrap"

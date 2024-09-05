@@ -2,8 +2,8 @@ import { useState } from "react"
 import Form from 'react-bootstrap/Form'
 import Button from "react-bootstrap/Button"
 import Stack from 'react-bootstrap/Stack'
-import { FormikErrors, useFormik } from "formik"
-import { RegisterPatientInitialValues, registerPatientIniialValues } from '@/app/utils/initialValues/registerPatient'
+import { useFormik } from "formik"
+import { registerPatientIniialValues } from '@/app/utils/initialValues/registerPatient'
 import { registerPatientValidationSchema } from '@/app/utils/validations/registerPatient'
 import { useMask } from '@react-input/mask'
 import { api } from "@/app/service/api"
@@ -51,12 +51,13 @@ export default function PatientRegistrationForm ({
                     icon: "success",
                     customClass: {
                         confirmButton: "btn btn-primary"
-                    }
+                    },
+                    confirmButtonAriaLabel: "Ok!"
                 })
             } catch (error: any) {
                 console.log(error);
                 
-                const errors = error.response.data.errors as FormikErrors<RegisterPatientInitialValues>
+                const errors = error.response.data.errors
                 setErrors(errors)
                 setLoadingRequest(false)
             }

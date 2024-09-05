@@ -11,12 +11,12 @@ type Props = ModalProps & {
 }
 
 export function ConsultationDetailsModal({consultation, ...rest}: Props) {
-	const corDaCondicao = getConditionColor(consultation.condition)
-  const statusDaPressaoArterialDiastolica = calculateConditionStatus("pressao arterial diastólica", consultation.diastolicBloodPressure)
-  const statusDaPressaoArterialSistolica = calculateConditionStatus("pressao arterial sistólica", consultation.systolicBloodPressure)
-  const statusDaFrequenciaCardiaca = calculateConditionStatus("frequência cardíaca", consultation.heartRate)
-  const statusDaRespiracao = calculateConditionStatus("respiracao", consultation.respiratoryRate)
-  const statusDaTemperatura = calculateConditionStatus("temperatura", consultation.temperature)
+	const colorOfCondition = getConditionColor(consultation.condition)
+	const diastolicBloodPressureStatus = calculateConditionStatus("pressao arterial diastólica", consultation.diastolicBloodPressure)
+	const systolicBloodPressureStatus = calculateConditionStatus("pressao arterial sistólica", consultation.systolicBloodPressure)
+	const heartRateStatus = calculateConditionStatus("frequência cardíaca", consultation.heartRate)
+	const breathingStatus = calculateConditionStatus("respiracao", consultation.respiratoryRate)
+	const temperatureStatus = calculateConditionStatus("temperatura", consultation.temperature)
 
 	return (
 		<Modal {...rest} size="lg">
@@ -28,28 +28,28 @@ export function ConsultationDetailsModal({consultation, ...rest}: Props) {
 			<Modal.Body className="">
 				<div className="mb-3">
 					<div  className="fs-4">
-						Resultado da Consulta: <span className={`text-${corDaCondicao}`}>{consultation.condition}</span>
+						Resultado da Consulta: <span className={`text-${colorOfCondition}`}>{consultation.condition}</span>
 					</div>
 					<div className="d-flex justify-content-between">
-						<span><span className={`text-${corDaCondicao}`}>{consultation.percentageOfSymptomsFelt}%</span> dos sintomas sentidos</span><span>Realizada em {moment(consultation.created_at).format("DD/MM/YYYY")}</span>
+						<span><span className={`text-${colorOfCondition}`}>{consultation.percentageOfSymptomsFelt}%</span> dos sintomas sentidos</span><span>Realizada em {moment(consultation.created_at).format("DD/MM/YYYY")}</span>
 					</div>
 				</div>
 				<div className="mb-3">
 					<div className="fs-5">Sinais Vitais:</div>
 					<div>
-						Pressão Arterial Diastólica: <span className={`text-${statusDaPressaoArterialDiastolica[1]}`}>{consultation.diastolicBloodPressure} mmHg ({statusDaPressaoArterialDiastolica[0]})</span>
+						Pressão Arterial Diastólica: <span className={`text-${diastolicBloodPressureStatus[1]}`}>{consultation.diastolicBloodPressure} mmHg ({diastolicBloodPressureStatus[0]})</span>
 					</div>
 					<div>
-						Pressão Arterial Sistólica: <span className={`text-${statusDaPressaoArterialSistolica[1]}`}>{consultation.systolicBloodPressure} mmHg ({statusDaPressaoArterialSistolica[0]})</span>
+						Pressão Arterial Sistólica: <span className={`text-${systolicBloodPressureStatus[1]}`}>{consultation.systolicBloodPressure} mmHg ({systolicBloodPressureStatus[0]})</span>
 					</div>
 					<div>
-						Frequência Cardíaca: <span className={`text-${statusDaFrequenciaCardiaca[1]}`}>{consultation.heartRate} bpm ({statusDaFrequenciaCardiaca[0]})</span>
+						Frequência Cardíaca: <span className={`text-${heartRateStatus[1]}`}>{consultation.heartRate} bpm ({heartRateStatus[0]})</span>
 					</div>
 					<div>
-						Frequência Respiratória: <span className={`text-${statusDaRespiracao[1]}`}>{consultation.respiratoryRate} irpm ({statusDaRespiracao[0]})</span>
+						Frequência Respiratória: <span className={`text-${breathingStatus[1]}`}>{consultation.respiratoryRate} irpm ({breathingStatus[0]})</span>
 					</div>
 					<div>
-						Temperatura: <span className={`text-${statusDaTemperatura[1]}`}>{consultation.temperature} °C ({statusDaTemperatura[0]})</span>
+						Temperatura: <span className={`text-${temperatureStatus[1]}`}>{consultation.temperature} °C ({temperatureStatus[0]})</span>
 					</div>
 				</div>
 				{consultation.symptoms.length ? (
@@ -57,7 +57,7 @@ export function ConsultationDetailsModal({consultation, ...rest}: Props) {
 						<div className="fs-5 mb-1">Sintomas que o paciente apresentou:</div>
 						<div className="d-flex flex-wrap gap-2">
 							{consultation.symptoms.map(symptom => (
-								<div key={symptom} className="p-1 rounded text-bg-primary">{symptom}</div>
+								<div key={symptom} className="p-2 rounded text-bg-primary">{symptom}</div>
 							))}
 						</div>
 					</div>

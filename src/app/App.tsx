@@ -53,7 +53,7 @@ export function App() {
         />
     },
     {
-      path: 'patient/:patientId',
+      path: 'patient',
       element: <PatientPage/>
     }
   ])

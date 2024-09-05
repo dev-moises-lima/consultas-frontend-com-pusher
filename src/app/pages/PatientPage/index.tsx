@@ -1,39 +1,29 @@
 import { useEffect, useRef, useState } from "react"
-import { Button } from "react-bootstrap"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
+import Button from "react-bootstrap/Button"
 import { BiPlus } from "react-icons/bi"
 import { GrReturn } from "react-icons/gr"
-// import { FormularioDeConsulta } from "./formulario-de-consulta"
 import { PatientInfo } from "./PatientInfo"
 import { ConsultationTable } from "./ConsultationTable"
-// import { Mensagem } from "../../lib/minhas-interfaces-e-tipos"
 import { api } from "@/app/service/api"
-import { useLocation, useNavigate, useParams } from "react-router-dom"
-// import { Notificacao } from "../../components/notificacao"
 import { Patient } from "@/app/types/Patient"
 import ConsultationRegistrationForm from "@/app/components/forms/ConsultationRegistrationForm"
 import { Consultation } from "@/app/types/Consultation"
 import { RegisteredConsultationEvent } from "@/app/types/events/RegisteredConsultationEvent"
-import { ConsultationAccordion } from "./ConsultationAccordion"
 import { ConsultationDetailsModal } from "@/app/components/modals/ConsultationDetailsModal"
 
 export function PatientPage() {
-  // const [mensagens, setMensagens] = useState<Mensagem[]>([])
-  const [exibindoFormularioDeConsulta, setMostrarFormularioDeConsulta] = useState(false)
+  const [displayingConsultationForm, setdisplayingConsultationForm] = useState(false)
   const [openDetailsModal, setOpenDetailsModal] = useState(false)
   const [consultationSelected, setConsultationSelected] = useState<Consultation>()
   const { state } = useLocation()
   const [patient, setPatient] = useState<Patient>(state as Patient)
   const [consultations, setConsultations] = useState<Consultation[]>()
-  const { patientId } = useParams()
   const navigate = useNavigate()
   const formRef = useRef(null)
   const infoPatientRef = useRef(null)
   
-  if(!state) {
-    navigate("/")
-  }
-
-  window.Echo.channel(`patient-updates-${patientId}`)
+  window.Echo.channel(`patient-updates-${patient.id}`)
     .listen('RegisteredConsultation', (event: RegisteredConsultationEvent) => {
       addConsultation(event.consultation)
     })
@@ -44,34 +34,34 @@ export function PatientPage() {
     setConsultations([...consultations, consulta])
   }
 
-  function rolarParaInfoPaciente() {
+  function scrollToPatientInfo() {
     if(infoPatientRef.current) {      
       const sessaoInfoPaciente = infoPatientRef.current as HTMLTableSectionElement
       sessaoInfoPaciente.scrollIntoView({behavior: "smooth"})
     }
   }
 
-  function rolarParaSessaoDoFormulario() {
+  function scrollToFormSession() {
     if(formRef.current) {
-      const sessaoDoFormulario = formRef.current as HTMLTableSectionElement
-      sessaoDoFormulario.scrollIntoView({behavior: "smooth"})
+      const formSection = formRef.current as HTMLTableSectionElement
+      formSection.scrollIntoView({behavior: "smooth"})
     }
   }
 
   useEffect(() => {
-    if(exibindoFormularioDeConsulta) {
-      rolarParaSessaoDoFormulario()
+    if(displayingConsultationForm) {
+      scrollToFormSession()
     } else {
-      rolarParaInfoPaciente()
+      scrollToPatientInfo()
     }
-  }, [exibindoFormularioDeConsulta])
+  }, [displayingConsultationForm])
 
-  function exibirFormularioDeConsulta() {
-    setMostrarFormularioDeConsulta(true)
+  function openConsultationForm() {
+    setdisplayingConsultationForm(true)
   }
 
-  function esconderFormularioDeConsulta() {
-    setMostrarFormularioDeConsulta(false)
+  function closeConsultationForm() {
+    setdisplayingConsultationForm(false)
   }
   
   function selectConsultationForDetails(consultation: Consultation) {
@@ -85,7 +75,7 @@ export function PatientPage() {
 
   async function fetchConsultations() {
     try {
-      const { data } = await api.get(`patients/${patientId}/consultations`)
+      const { data } = await api.get(`patients/${patient.id}/consultations`)
       setConsultations(data)
     } catch (error) {
       console.log(error)
@@ -94,59 +84,50 @@ export function PatientPage() {
 
   useEffect(() => {
     fetchConsultations()
-  }, [patientId])
+  }, [])
 
   return (
     <>
-      {patient ? (
-        <>
-          <PatientInfo 
-            paciente={patient}
-            sectionRef={infoPatientRef}
+      <PatientInfo 
+        patient={patient}
+        sectionRef={infoPatientRef}
+      />
+      {displayingConsultationForm ? 
+        <section ref={formRef} className="p-3 mt-3 bg-secondary-subtle">
+          <ConsultationRegistrationForm 
+            patientId={patient.id}
+            onCancel={closeConsultationForm}
+            onSuccess={(consultation) => {
+              addConsultation(consultation)
+              closeConsultationForm()
+              setPatient({
+                ...patient,
+                currentCondition: consultation.condition
+              })
+            }}
           />
-          {exibindoFormularioDeConsulta ? 
-            <section ref={formRef} className="p-3 mt-3 bg-secondary-subtle">
-              <ConsultationRegistrationForm 
-                onCancel={esconderFormularioDeConsulta}
-                onSuccess={(consultation) => {
-                  addConsultation(consultation as Consultation)
-                  esconderFormularioDeConsulta()
-                  setPatient({
-                    ...patient,
-                    currentCondition: consultation.condition
-                  })
-                }}
-              />
-            </section>
-            : (
-              <div className="p-3 mt-3 bg-secondary-subtle justify-content-between d-flex">
-                <Button
-                  onClick={() => navigate("/")}
-                  size="lg"
-                >
-                  Voltar <GrReturn />
-                </Button>
-                <Button 
-                  onClick={exibirFormularioDeConsulta} 
-                  size="lg"
-                >
-                  Cadastrar nova consulta <BiPlus/>
-                </Button>
-              </div>
-            )
-          }
-          <ConsultationTable 
-            consultations={consultations}
-            selectConsultationForDetails={selectConsultationForDetails}
-          />
-        </>
-      ) : (
-        <div className="p-4 bg-secondary-subtle rounded-2">
-          <h1 className="text-info text-center">
-            Carregando dados do paciente...
-          </h1>
-        </div>
-      )}
+        </section>
+        : (
+          <div className="p-3 mt-3 bg-secondary-subtle justify-content-between d-flex">
+            <Button
+              onClick={() => navigate("/")}
+              size="lg"
+            >
+              Voltar <GrReturn />
+            </Button>
+            <Button 
+              onClick={openConsultationForm} 
+              size="lg"
+            >
+              Cadastrar nova consulta <BiPlus/>
+            </Button>
+          </div>
+        )
+      }
+      <ConsultationTable 
+        consultations={consultations}
+        selectConsultationForDetails={selectConsultationForDetails}
+      />
       {consultationSelected && (
         <ConsultationDetailsModal
           show={openDetailsModal} 

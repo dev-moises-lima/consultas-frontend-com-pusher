@@ -14,19 +14,22 @@ import { registerConsultationIniialValues } from "@/app/utils/initialValues/regi
 import { registerConsultationValidationSchema } from "@/app/utils/validations/registerCnsultation"
 import { api } from "@/app/service/api"
 import { Consultation } from "@/app/types/Consultation"
+import { calculateConditionStatus } from "@/app/utils/functions/calculateConditionStatus"
 
 type Props = FormProps & {
+    patientId: number
     onCancel: () => void
     onSuccess: (consultation: Consultation) => void
 }
 
 export default function ConsultationRegistrationForm({
+    patientId,
     onCancel,
     onSuccess,
     ...rest
 }: Props) {
-    const { patientId } = useParams()
     const [loadingRequest, setLoadingRequest] = useState(false)
+    
     const formik = useFormik({
         initialValues: registerConsultationIniialValues,
         validationSchema: registerConsultationValidationSchema,
@@ -34,7 +37,7 @@ export default function ConsultationRegistrationForm({
             try {
                 setLoadingRequest(true)
 
-                const { data } = await api.post(`/consultation/${patientId}`, {
+                const { data } = await api.post(`patients/${patientId}/consultations`, {
                     ...rest,
                     temperature: Number(temperature).toFixed(1),
                     symptoms: JSON.stringify(symptoms),
@@ -50,7 +53,8 @@ export default function ConsultationRegistrationForm({
                     icon: "success",
                     customClass: {
                         confirmButton: "btn btn-primary"
-                    }
+                    },
+                    confirmButtonAriaLabel: "Ok!"
                 })
             } catch (error: any) {
                 console.log(error)
@@ -61,11 +65,23 @@ export default function ConsultationRegistrationForm({
         }
     })
 
+	const diastolicBloodPressureStatus = calculateConditionStatus("pressao arterial diastólica", formik.values.diastolicBloodPressure)
+	const systolicBloodPressureStatus = calculateConditionStatus("pressao arterial sistólica", formik.values.systolicBloodPressure)
+	const heartRateStatus = calculateConditionStatus("frequência cardíaca", formik.values.heartRate)
+	const breathingStatus = calculateConditionStatus("respiracao", formik.values.respiratoryRate)
+	const temperatureStatus = calculateConditionStatus("temperatura", formik.values.temperature)
+
     return (
         <Form onSubmit={formik.handleSubmit} {...rest}>
             <FloatingLabel
                 className="mb-3"
-                label="Pressão Arterial Sistólica"
+                label={(<>
+                    Pressão Arterial Sistólica {systolicBloodPressureStatus.length > 0 && (
+                        <span className={`text-${systolicBloodPressureStatus[1]}`}>
+                            {`(${systolicBloodPressureStatus[0]})`}
+                        </span>
+                    )}
+                </>)}
                 controlId="systolicBloodPressure"
             >
                 <Form.Control
@@ -73,6 +89,7 @@ export default function ConsultationRegistrationForm({
                     type="number"
                     min={1}
                     placeholder="Pressão Arterial Sistólica"
+                    value={formik.values.systolicBloodPressure || ""}
                     onChange={formik.handleChange}
                     isInvalid={!!(formik.touched.systolicBloodPressure && formik.errors.systolicBloodPressure)}
                 />
@@ -82,14 +99,20 @@ export default function ConsultationRegistrationForm({
             </FloatingLabel>
             <FloatingLabel
                 className="mb-3"
-                label="Pressão Arterial Diastólica"
+                label={(<>
+                    Pressão Arterial Diastólica {diastolicBloodPressureStatus.length > 0 && (
+                        <span className={`text-${diastolicBloodPressureStatus[1]}`}>
+                            {`(${diastolicBloodPressureStatus[0]})`}
+                        </span>
+                    )}
+                </>)}
                 controlId="diastolicBloodPressure"
             >                    
                 <Form.Control
                     type="number"
                     min={1}
                     placeholder="Pressão Arterial Diastólica"
-                    value={formik.values.diastolicBloodPressure}
+                    value={formik.values.diastolicBloodPressure || ""}
                     onChange={formik.handleChange}
                     isInvalid={!!(formik.touched.diastolicBloodPressure && formik.errors.diastolicBloodPressure)}
                 />
@@ -99,14 +122,20 @@ export default function ConsultationRegistrationForm({
             </FloatingLabel>
             <FloatingLabel
                 className="mb-3"
-                label="Frequência Cardíaca"
+                label={(<>
+                    Frequência Cardíaca {heartRateStatus.length > 0 && (
+                        <span className={`text-${heartRateStatus[1]}`}>
+                            {`(${heartRateStatus[0]})`}
+                        </span>
+                    )}
+                </>)}
                 controlId="heartRate"
             >
                 <Form.Control
                     type="number"
                     min={1}
                     placeholder="Frequência Cardíaca"
-                    value={formik.values.heartRate}
+                    value={formik.values.heartRate || ""}
                     onChange={formik.handleChange}
                     isInvalid={!!(formik.touched.heartRate && formik.errors.heartRate)}
                 />
@@ -116,14 +145,20 @@ export default function ConsultationRegistrationForm({
             </FloatingLabel>
             <FloatingLabel
                 className="mb-3"
-                label="Frequência Respiratória"
+                label={(<>
+                    Frequência Respiratória {breathingStatus.length > 0 && (
+                        <span className={`text-${breathingStatus[1]}`}>
+                            {`(${breathingStatus[0]})`}
+                        </span>
+                    )}
+                </>)}
                 controlId="respiratoryRate"
             >
                 <Form.Control
                     type="number"
                     min={1}
                     placeholder="Frequência Respiratória"
-                    value={formik.values.respiratoryRate}
+                    value={formik.values.respiratoryRate || ""}
                     onChange={formik.handleChange}
                     isInvalid={!!(formik.touched.respiratoryRate && formik.errors.respiratoryRate)}
                 />
@@ -133,14 +168,20 @@ export default function ConsultationRegistrationForm({
             </FloatingLabel>
             <FloatingLabel
                 className="mb-3"
-                label="Temperatura"
+                label={(<>
+                    Temperatura {temperatureStatus.length > 0 && (
+                        <span className={`text-${temperatureStatus[1]}`}>
+                            {`(${temperatureStatus[0]})`}
+                        </span>
+                    )}
+                </>)}
                 controlId="temperature"
             >
                 <Form.Control
                     type="number"
                     min={1}
                     placeholder="Temperatura"
-                    value={formik.values.temperature}
+                    value={formik.values.temperature || ""}
                     onChange={formik.handleChange}
                     isInvalid={!!(formik.touched.temperature && formik.errors.temperature)}
                 />

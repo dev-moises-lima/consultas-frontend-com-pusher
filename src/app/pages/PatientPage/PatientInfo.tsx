@@ -6,22 +6,20 @@ import { getConditionColor } from "@/app/utils/functions/getConditionColor";
 import { Patient } from "@/app/types/Patient";
 
 interface PatientInfoProps {
-  paciente: Patient
+  patient: Patient
   sectionRef: React.MutableRefObject<null>
 }
 
 export function PatientInfo({
-  paciente,
+  patient,
   sectionRef
 } : PatientInfoProps) {
   const [fotoCarregada, setFotoCarregada] = useState(false)
   
-  const hoje = moment()
-  const dataDeNascimento = moment(paciente.dateOfBirth , "YYYY/MM/DD")
-  const idadeDoPaciente = hoje.diff(dataDeNascimento, "year")
-
-  const condicaoDoPaciente: PatientCondition = paciente.currentCondition
-  const corDaCondicao = getConditionColor(condicaoDoPaciente)
+  const today = moment()
+  const dateOfBirth = moment(patient.dateOfBirth , "YYYY/MM/DD")
+  const patientAge = today.diff(dateOfBirth, "year")
+  const colorOfCondition = getConditionColor(patient.currentCondition)
   
   return (
     <section ref={sectionRef} className="p-3 bg-info-subtle rounded-2">
@@ -34,7 +32,7 @@ export function PatientInfo({
                 Nome Do paciente
               </div>
               <div className="fs-4 fw-semibold">
-                {paciente.name}
+                {patient.name}
               </div>
             </Col>
             <Col>
@@ -43,7 +41,7 @@ export function PatientInfo({
               </div>
               <div className="fs-4">
                 <Badge >
-                  {paciente.id}
+                  {patient.id}
                 </Badge>
               </div>
             </Col>
@@ -54,15 +52,15 @@ export function PatientInfo({
                 Idade
               </div>
               <div className="fs-4 fw-semibold">
-                {idadeDoPaciente}
+                {patientAge}
               </div>
             </Col>
             <Col>
               <div className="fs-5 text-info">
                 Resultado da Última Consulta
               </div>
-              <div className={`fs-4 text-${corDaCondicao} fw-semibold`}>
-                {condicaoDoPaciente || "Nenhuma consulta realizada"}
+              <div className={`fs-4 text-${colorOfCondition} fw-semibold`}>
+                {patient.currentCondition || "Nenhuma consulta realizada"}
               </div>
             </Col>
           </Row>
@@ -72,7 +70,7 @@ export function PatientInfo({
                 CPF
               </div>
               <div className="fs-4 fw-semibold">
-                {paciente.cpf}
+                {patient.cpf}
               </div>
             </Col>
             <Col>
@@ -80,7 +78,7 @@ export function PatientInfo({
                 Telefone
               </div>
               <div className="fs-4 fw-semibold">
-                {paciente.telephone}
+                {patient.telephone}
               </div>
             </Col>
           </Row>
@@ -100,7 +98,7 @@ export function PatientInfo({
             className={`d-${fotoCarregada ? "block" : "none"}`}
             roundedCircle
             fluid
-            src={paciente.photoUrl}
+            src={patient.photoUrl}
             onLoad={() => setFotoCarregada(true)}
           />
         </Col>

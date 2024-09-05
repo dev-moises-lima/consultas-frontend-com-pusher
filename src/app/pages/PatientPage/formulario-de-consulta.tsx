@@ -1,11 +1,11 @@
 import { FormEvent, useContext, useEffect, useState } from "react"
 import { Button, Col, FloatingLabel, Form, Row, Stack } from "react-bootstrap"
 import { calculateConditionStatus, generateUUID, obterMensagemDeErro } from "../../lib/minhas-funcoes.ts"
-import { api } from "../../lib/axios.ts"
+import { api } from "@/app/service/api.ts"
 import { Consulta, ErrosDeRealizacaoDeConsulta, Mensagem   } from "../../lib/minhas-interfaces-e-tipos.ts"
 import { AppContext } from "../../contexts/AppContext.tsx"
 import { AxiosError } from "axios"
-import { Patient } from "@/app/types/pwatient.ts"
+import { Patient } from "@/app/types/Patient.ts"
 
 interface FormularioDeConsultaProps {
   esconderFormularioDeConsulta: () => void
