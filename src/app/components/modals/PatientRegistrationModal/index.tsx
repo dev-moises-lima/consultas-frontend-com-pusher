@@ -1,4 +1,5 @@
 import Modal, { ModalProps } from "react-bootstrap/Modal"
+
 import PatientRegistrationForm from "@/app/components/forms/PatientRegistrationForm"
 import { Patient } from "@/app/types/Patient"
 

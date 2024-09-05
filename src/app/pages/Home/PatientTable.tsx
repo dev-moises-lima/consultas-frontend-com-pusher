@@ -1,9 +1,15 @@
-import { ItemDaTabelaPacientes } from "./PatientTableRow"
-import { Col, Form, InputGroup, Row, Table } from "react-bootstrap"
-import { IoIosSearch } from "react-icons/io"
 import { useState } from "react"
+
+import Table from "react-bootstrap/Table"
+import Col from "react-bootstrap/Col"
+import Form from "react-bootstrap/Form"
+import InputGroup from "react-bootstrap/InputGroup"
+import Row from "react-bootstrap/Row"
+import { IoIosSearch } from "react-icons/io"
+
 import { transformForSearch } from "@/app/utils/functions/transformForSearch" 
 import { Patient } from "@/app/types/Patient"
+import { PatientTableRow } from "./PatientTableRow"
 
 interface TabelaDePacientesProps {
   patients: Patient[] | undefined
@@ -65,7 +71,7 @@ export function PatientTable({
             </thead>
             <tbody>
               {filteredPatients.reverse().map((patient) => (
-                <ItemDaTabelaPacientes key={patient.id} paciente={patient} />
+                <PatientTableRow key={patient.id} paciente={patient} />
               ))}
             </tbody>
           </Table>

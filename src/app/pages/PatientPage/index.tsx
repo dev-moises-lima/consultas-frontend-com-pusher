@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
+
 import Button from "react-bootstrap/Button"
 import { BiPlus } from "react-icons/bi"
 import { GrReturn } from "react-icons/gr"
+
 import { PatientInfo } from "./PatientInfo"
 import { ConsultationTable } from "./ConsultationTable"
 import { api } from "@/app/service/api"

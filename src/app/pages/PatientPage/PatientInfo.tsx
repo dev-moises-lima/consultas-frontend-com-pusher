@@ -1,8 +1,15 @@
-import { Col, Row, Image, Stack, Badge, Placeholder } from "react-bootstrap";
-import moment from "moment";
-import { useState } from "react";
-import { getConditionColor } from "@/app/utils/functions/getConditionColor";
-import { Patient } from "@/app/types/Patient";
+import { useState } from "react"
+
+import Col from "react-bootstrap/Col"
+import Row from "react-bootstrap/Row"
+import Image from "react-bootstrap/Image"
+import Stack from "react-bootstrap/Stack"
+import Badge from "react-bootstrap/Badge"
+import Placeholder from "react-bootstrap/Placeholder"
+import moment from "moment"
+
+import { getConditionColor } from "@/app/utils/functions/getConditionColor"
+import { Patient } from "@/app/types/Patient"
 
 interface PatientInfoProps {
   patient: Patient

@@ -1,5 +1,5 @@
 import moment from "moment";
-import { Button } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
 import { FaArrowRight } from "react-icons/fa";
 import { getConditionColor } from "@/app/utils/functions/getConditionColor";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +9,7 @@ interface PatientTableRowProps {
   paciente: Patient
 }
 
-export function ItemDaTabelaPacientes({
+export function PatientTableRow({
   paciente: patient,
 }: PatientTableRowProps) {
   const navigate = useNavigate()

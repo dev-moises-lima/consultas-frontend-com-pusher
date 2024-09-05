@@ -1,14 +1,16 @@
 import { useState } from "react"
+
 import Form from 'react-bootstrap/Form'
 import Button from "react-bootstrap/Button"
 import Stack from 'react-bootstrap/Stack'
 import { useFormik } from "formik"
+import Swal from "sweetalert2"
+
 import { registerPatientIniialValues } from '@/app/utils/initialValues/registerPatient'
 import { registerPatientValidationSchema } from '@/app/utils/validations/registerPatient'
 import { useMask } from '@react-input/mask'
 import { api } from "@/app/service/api"
 import { Patient } from '@/app/types/Patient'
-import Swal from "sweetalert2"
 
 interface Props {
     onCancel: () => void

@@ -1,8 +1,10 @@
 import { useState } from "react"
 import Table from "react-bootstrap/esm/Table"
-import { ConsultationTableRow } from "./ConsultationTableRow"
-import { Col, Form, Row } from "react-bootstrap"
+import Col from "react-bootstrap/Col"
+import Form from "react-bootstrap/Form"
+import Row from "react-bootstrap/Row"
 
+import { ConsultationTableRow } from "./ConsultationTableRow"
 import { Consultation } from "@/app/types/Consultation"
 
 interface Props {
@@ -55,7 +57,7 @@ export function ConsultationTable({
             </thead>
             <tbody>
               {consultationsWithFilter!.map(consultation => (
-                <ConsultationTableRow 
+                <ConsultationTableRow
                   key={consultation.id}
                   consultation={consultation}
                   selectConsultationForDetails={selectConsultationForDetails}

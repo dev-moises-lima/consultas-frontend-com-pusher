@@ -1,7 +1,8 @@
 import moment from "moment"
+import Button from "react-bootstrap/Button"
+
 import { Consultation } from "@/app/types/Consultation"
 import { getConditionColor } from "@/app/utils/functions/getConditionColor"
-import { Button } from "react-bootstrap"
 
 interface ConsultationTableRowProps {
   consultation: Consultation
