@@ -33,11 +33,16 @@ export default function ConsultationRegistrationForm({
         initialValues: registerConsultationIniialValues,
         validationSchema: registerConsultationValidationSchema,
         async onSubmit({symptoms, temperature, ...rest}, { setErrors }) {
+            const restWhithRound = Object.entries(rest).reduce((previousValue, currentValue) => {
+                previousValue[currentValue[0]] = Math.round(currentValue[1]!)
+                return previousValue
+            }, {} as any)
+
             try {
                 setLoadingRequest(true)
 
                 const { data } = await api.post(`patients/${patientId}/consultations`, {
-                    ...rest,
+                    ...restWhithRound,
                     temperature: Number(temperature).toFixed(1),
                     symptoms: JSON.stringify(symptoms),
                 })
@@ -75,6 +80,28 @@ export default function ConsultationRegistrationForm({
             <FloatingLabel
                 className="mb-3"
                 label={(<>
+                    Pressão Arterial Diastólica {diastolicBloodPressureStatus.length > 0 && (
+                        <span className={`text-${diastolicBloodPressureStatus[1]}`}>
+                            {`(${diastolicBloodPressureStatus[0]})`}
+                        </span>
+                    )}
+                </>)}
+                controlId="diastolicBloodPressure"
+            >                    
+                <Form.Control
+                    type="number"
+                    placeholder="Pressão Arterial Diastólica"
+                    value={formik.values.diastolicBloodPressure || ""}
+                    onChange={formik.handleChange}
+                    isInvalid={!!(formik.touched.diastolicBloodPressure && formik.errors.diastolicBloodPressure)}
+                />
+                <Form.Control.Feedback type="invalid">
+                    {formik.errors.diastolicBloodPressure}
+                </Form.Control.Feedback>
+            </FloatingLabel>
+            <FloatingLabel
+                className="mb-3"
+                label={(<>
                     Pressão Arterial Sistólica {systolicBloodPressureStatus.length > 0 && (
                         <span className={`text-${systolicBloodPressureStatus[1]}`}>
                             {`(${systolicBloodPressureStatus[0]})`}
@@ -86,7 +113,6 @@ export default function ConsultationRegistrationForm({
                 <Form.Control
                     autoFocus
                     type="number"
-                    min={1}
                     placeholder="Pressão Arterial Sistólica"
                     value={formik.values.systolicBloodPressure || ""}
                     onChange={formik.handleChange}
@@ -94,29 +120,6 @@ export default function ConsultationRegistrationForm({
                 />
                 <Form.Control.Feedback type="invalid">
                     {formik.errors.systolicBloodPressure}
-                </Form.Control.Feedback>
-            </FloatingLabel>
-            <FloatingLabel
-                className="mb-3"
-                label={(<>
-                    Pressão Arterial Diastólica {diastolicBloodPressureStatus.length > 0 && (
-                        <span className={`text-${diastolicBloodPressureStatus[1]}`}>
-                            {`(${diastolicBloodPressureStatus[0]})`}
-                        </span>
-                    )}
-                </>)}
-                controlId="diastolicBloodPressure"
-            >                    
-                <Form.Control
-                    type="number"
-                    min={1}
-                    placeholder="Pressão Arterial Diastólica"
-                    value={formik.values.diastolicBloodPressure || ""}
-                    onChange={formik.handleChange}
-                    isInvalid={!!(formik.touched.diastolicBloodPressure && formik.errors.diastolicBloodPressure)}
-                />
-                <Form.Control.Feedback type="invalid">
-                    {formik.errors.diastolicBloodPressure}
                 </Form.Control.Feedback>
             </FloatingLabel>
             <FloatingLabel
@@ -132,7 +135,6 @@ export default function ConsultationRegistrationForm({
             >
                 <Form.Control
                     type="number"
-                    min={1}
                     placeholder="Frequência Cardíaca"
                     value={formik.values.heartRate || ""}
                     onChange={formik.handleChange}
@@ -155,7 +157,6 @@ export default function ConsultationRegistrationForm({
             >
                 <Form.Control
                     type="number"
-                    min={1}
                     placeholder="Frequência Respiratória"
                     value={formik.values.respiratoryRate || ""}
                     onChange={formik.handleChange}
@@ -178,7 +179,6 @@ export default function ConsultationRegistrationForm({
             >
                 <Form.Control
                     type="number"
-                    min={1}
                     placeholder="Temperatura"
                     value={formik.values.temperature || ""}
                     onChange={formik.handleChange}

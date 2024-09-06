@@ -26,8 +26,12 @@ export function PatientPage() {
   const infoPatientRef = useRef(null)
   
   window.Echo.channel(`patient-updates-${patient.id}`)
-    .listen('RegisteredConsultation', (event: RegisteredConsultationEvent) => {
-      addConsultation(event.consultation)
+    .listen('RegisteredConsultation', ({ consultation }: RegisteredConsultationEvent) => {
+      addConsultation(consultation)
+      setPatient({
+        ...patient,
+        currentCondition: consultation.condition
+      })
     })
   
   function addConsultation(consulta: Consultation) {
