@@ -89,6 +89,7 @@ export default function ConsultationRegistrationForm({
                 controlId="diastolicBloodPressure"
             >                    
                 <Form.Control
+                    autoFocus
                     type="number"
                     placeholder="Pressão Arterial Diastólica"
                     value={formik.values.diastolicBloodPressure || ""}
@@ -111,7 +112,6 @@ export default function ConsultationRegistrationForm({
                 controlId="systolicBloodPressure"
             >
                 <Form.Control
-                    autoFocus
                     type="number"
                     placeholder="Pressão Arterial Sistólica"
                     value={formik.values.systolicBloodPressure || ""}
